@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MaxPlus Sporting Goods</title>
+    <meta
+      name="description"
+      content="Homepage concept for a U.S.-focused sporting goods brand with a full-width hero slider and featured product cards."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Noto+Sans+SC:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles-sporting.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="topline" data-i18n="topline">Sporting goods concept for the U.S. market.</div>
+      <nav class="nav shell" aria-label="Main navigation" data-i18n-aria-label="mainNavigation">
+        <a class="logo" href="#home" aria-label="MaxPlus home" data-i18n-aria-label="logoHome">
+          <span class="logo__mark">MP</span>
+          <span class="logo__text">
+            <strong>MAXPLUS</strong>
+            <small data-i18n="logoSub">Sporting Goods</small>
+          </span>
+        </a>
+
+        <button
+          class="nav-toggle"
+          type="button"
+          aria-expanded="false"
+          aria-controls="sporting-nav-menu"
+          data-i18n="navToggle"
+        >
+          Menu
+        </button>
+
+        <div class="nav__menu" id="sporting-nav-menu">
+          <a href="#home" data-i18n="navHome">Home</a>
+          <a href="#products" data-i18n="navProducts">Products</a>
+          <a href="#categories" data-i18n="navCategories">Categories</a>
+          <a href="#reviews" data-i18n="navReviews">Reviews</a>
+          <a href="#contact" data-i18n="navContact">Contact</a>
+        </div>
+
+        <div class="lang-switch" data-i18n-aria-label="languageSwitch" aria-label="Language switch">
+          <button class="lang-switch__button is-active" type="button" data-lang-button="en">
+            EN
+          </button>
+          <button class="lang-switch__button" type="button" data-lang-button="zh">
+            中文
+          </button>
+        </div>
+
+        <a class="button button--primary nav__cta" href="#products" data-i18n="navCta">
+          Shop The Range
+        </a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero-full" id="home">
+        <div class="hero-slider" data-slider>
+          <article class="hero-slide hero-slide--one is-active">
+            <div class="hero-slide__overlay"></div>
+            <div class="shell hero-slide__layout">
+              <div class="hero-slide__copy">
+                <p class="eyebrow" data-i18n="hero1Eyebrow">Athletic Lifestyle / Team Sports</p>
+                <h1 data-i18n="hero1Title">Sporting Goods That Look Ready To Move.</h1>
+                <p class="hero-slide__text" data-i18n="hero1Text">
+                  A broader homepage direction for training gear, team sports,
+                  outdoor recreation, and active family use across the U.S.
+                </p>
+                <div class="hero-slide__actions">
+                  <a class="button button--primary" href="#products" data-i18n="hero1Cta1">
+                    Explore Products
+                  </a>
+                  <a class="button button--ghost" href="#contact" data-i18n="hero1Cta2">
+                    Get Wholesale Info
+                  </a>
+                </div>
+              </div>
+
+              <div class="hero-slide__panel">
+                <div class="hero-panel-card">
+                  <div class="hero-panel-card__eyebrow" data-i18n="featuredRange">
+                    Featured Range
+                  </div>
+                  <div class="hero-stack">
+                    <div class="hero-stack__card hero-stack__card--ball" data-i18n="heroStackBall">
+                      Game Balls
+                    </div>
+                    <div class="hero-stack__card hero-stack__card--train" data-i18n="heroStackTrain">
+                      Training Gear
+                    </div>
+                    <div class="hero-stack__card hero-stack__card--net" data-i18n="heroStackNet">
+                      Portable Nets
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="hero-slide hero-slide--two">
+            <div class="hero-slide__overlay"></div>
+            <div class="shell hero-slide__layout">
+              <div class="hero-slide__copy">
+                <p class="eyebrow" data-i18n="hero2Eyebrow">Training / Recovery / Performance</p>
+                <h1 data-i18n="hero2Title">Clean Layout. Strong Product Focus. Better Retail Feel.</h1>
+                <p class="hero-slide__text" data-i18n="hero2Text">
+                  This concept is designed to feel like a modern sporting goods
+                  brand instead of a single-product landing page.
+                </p>
+                <div class="hero-slide__actions">
+                  <a class="button button--primary" href="#categories" data-i18n="hero2Cta1">
+                    View Categories
+                  </a>
+                  <a class="button button--ghost" href="#reviews" data-i18n="hero2Cta2">
+                    See Direction
+                  </a>
+                </div>
+              </div>
+
+              <div class="hero-slide__panel">
+                <div class="hero-metrics">
+                  <div class="hero-metric">
+                    <strong data-i18n="heroMetric1Title">4 Core</strong>
+                    <span data-i18n="heroMetric1Body">Product families</span>
+                  </div>
+                  <div class="hero-metric">
+                    <strong data-i18n="heroMetric2Title">U.S. Ready</strong>
+                    <span data-i18n="heroMetric2Body">English-first layout</span>
+                  </div>
+                  <div class="hero-metric">
+                    <strong data-i18n="heroMetric3Title">Modular</strong>
+                    <span data-i18n="heroMetric3Body">Expandable site structure</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article class="hero-slide hero-slide--three">
+            <div class="hero-slide__overlay"></div>
+            <div class="shell hero-slide__layout">
+              <div class="hero-slide__copy">
+                <p class="eyebrow" data-i18n="hero3Eyebrow">Backyard / Team / Recreation</p>
+                <h1 data-i18n="hero3Title">Built For Sports Retail, Clubs, Camps, And Daily Play.</h1>
+                <p class="hero-slide__text" data-i18n="hero3Text">
+                  The first screen now reads as a full branded showcase with
+                  category depth, product cards, and room for future expansion.
+                </p>
+                <div class="hero-slide__actions">
+                  <a class="button button--primary" href="#products" data-i18n="hero3Cta1">
+                    See Best Sellers
+                  </a>
+                  <a class="button button--ghost" href="#newsletter-sporting" data-i18n="subscribe">
+                    Subscribe
+                  </a>
+                </div>
+              </div>
+
+              <div class="hero-slide__panel">
+                <div class="quote-card">
+                  <p data-i18n="heroQuote">
+                    “This feels like a real sports equipment homepage, not a
+                    template.”
+                  </p>
+                  <span data-i18n="heroQuoteCaption">Target reaction</span>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <div class="hero-controls shell">
+            <button
+              class="hero-dot is-active"
+              type="button"
+              aria-label="Show slide 1"
+              data-i18n-aria-label="heroDot1"
+            ></button>
+            <button
+              class="hero-dot"
+              type="button"
+              aria-label="Show slide 2"
+              data-i18n-aria-label="heroDot2"
+            ></button>
+            <button
+              class="hero-dot"
+              type="button"
+              aria-label="Show slide 3"
+              data-i18n-aria-label="heroDot3"
+            ></button>
+          </div>
+        </div>
+      </section>
+
+      <section class="section highlights">
+        <div class="shell highlights__grid">
+          <div class="highlight-card reveal">
+            <strong data-i18n="highlight1Title">Broader product business</strong>
+            <span data-i18n="highlight1Body">From team play to training accessories.</span>
+          </div>
+          <div class="highlight-card reveal">
+            <strong data-i18n="highlight2Title">More open page rhythm</strong>
+            <span data-i18n="highlight2Body">Wider spacing and cleaner retail hierarchy.</span>
+          </div>
+          <div class="highlight-card reveal">
+            <strong data-i18n="highlight3Title">Full-row carousel</strong>
+            <span data-i18n="highlight3Body">The hero owns the first screen end to end.</span>
+          </div>
+          <div class="highlight-card reveal">
+            <strong data-i18n="highlight4Title">Product cards included</strong>
+            <span data-i18n="highlight4Body">Ready to confirm card style before full buildout.</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section featured-products" id="products">
+        <div class="shell">
+          <div class="section-heading reveal">
+            <p class="eyebrow" data-i18n="featuredEyebrow">Featured Products</p>
+            <h2 data-i18n="featuredTitle">Product cards are now part of the homepage core.</h2>
+            <p data-i18n="featuredText">
+              This section is built to test how the site should present sports
+              goods at a glance: clear product type, strong price line, clean
+              CTA, and enough detail to feel commercial.
+            </p>
+          </div>
+
+          <div class="product-grid">
+            <article class="product-card reveal">
+              <div class="product-card__visual product-card__visual--net"></div>
+              <div class="product-card__content">
+                <span class="product-card__tag" data-i18n="product1Tag">Best Seller</span>
+                <h3 data-i18n="product1Title">Portable Volleyball Net Kit</h3>
+                <p data-i18n="product1Text">
+                  Outdoor-ready poles, adjustable net tension, carry bag included.
+                </p>
+                <div class="product-card__meta">
+                  <strong>$129</strong>
+                  <a href="#contact" data-i18n="viewDetails">View Details</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="product-card reveal">
+              <div class="product-card__visual product-card__visual--cones"></div>
+              <div class="product-card__content">
+                <span class="product-card__tag" data-i18n="product2Tag">Training</span>
+                <h3 data-i18n="product2Title">Agility Cone & Ladder Set</h3>
+                <p data-i18n="product2Text">
+                  Fast-footwork kit for camps, clubs, schools, and home training.
+                </p>
+                <div class="product-card__meta">
+                  <strong>$49</strong>
+                  <a href="#contact" data-i18n="viewDetails">View Details</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="product-card reveal">
+              <div class="product-card__visual product-card__visual--bands"></div>
+              <div class="product-card__content">
+                <span class="product-card__tag" data-i18n="product3Tag">Recovery</span>
+                <h3 data-i18n="product3Title">Resistance Band Pack</h3>
+                <p data-i18n="product3Text">
+                  Compact strength and mobility pack with multiple resistance levels.
+                </p>
+                <div class="product-card__meta">
+                  <strong>$34</strong>
+                  <a href="#contact" data-i18n="viewDetails">View Details</a>
+                </div>
+              </div>
+            </article>
+
+            <article class="product-card reveal">
+              <div class="product-card__visual product-card__visual--balls"></div>
+              <div class="product-card__content">
+                <span class="product-card__tag" data-i18n="product4Tag">Team Play</span>
+                <h3 data-i18n="product4Title">Match Ball Pack</h3>
+                <p data-i18n="product4Text">
+                  Durable composite game balls for school, club, and backyard use.
+                </p>
+                <div class="product-card__meta">
+                  <strong>$79</strong>
+                  <a href="#contact" data-i18n="viewDetails">View Details</a>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section category-zone" id="categories">
+        <div class="shell category-layout">
+          <div class="category-copy reveal">
+            <p class="eyebrow" data-i18n="categoryEyebrow">Category Layout</p>
+            <h2 data-i18n="categoryTitle">A homepage that can scale across multiple sports categories.</h2>
+            <p data-i18n="categoryText">
+              This version is organized to support multiple business lines
+              without losing focus, which makes it safer if the store sells more
+              than one kind of sports equipment.
+            </p>
+          </div>
+
+          <div class="category-grid">
+            <article class="category-card reveal">
+              <strong data-i18n="category1Title">Team Sports</strong>
+              <span data-i18n="category1Text">Balls, nets, markers, game-day essentials</span>
+            </article>
+            <article class="category-card reveal">
+              <strong data-i18n="category2Title">Training Gear</strong>
+              <span data-i18n="category2Text">Agility, footwork, strength, conditioning</span>
+            </article>
+            <article class="category-card reveal">
+              <strong data-i18n="category3Title">Outdoor Play</strong>
+              <span data-i18n="category3Text">Portable systems for yard, beach, and park use</span>
+            </article>
+            <article class="category-card reveal">
+              <strong data-i18n="category4Title">Recovery</strong>
+              <span data-i18n="category4Text">Bands, rollers, light performance accessories</span>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section review-zone" id="reviews">
+        <div class="shell">
+          <div class="section-heading reveal">
+            <p class="eyebrow" data-i18n="reviewEyebrow">Direction Check</p>
+            <h2 data-i18n="reviewTitle">What this sporting goods version is trying to improve.</h2>
+          </div>
+
+          <div class="review-grid">
+            <article class="review-card reveal">
+              <p data-i18n="review1">Feels broader and more commercial than a single-product site.</p>
+            </article>
+            <article class="review-card reveal">
+              <p data-i18n="review2">Product cards make the homepage easier to evaluate quickly.</p>
+            </article>
+            <article class="review-card reveal">
+              <p data-i18n="review3">The page layout is more open, cleaner, and easier to expand.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section contact-zone" id="contact">
+        <div class="shell contact-layout">
+          <div class="contact-copy reveal">
+            <p class="eyebrow" data-i18n="contactEyebrow">Collect Opinions</p>
+            <h2 data-i18n="contactTitle">
+              Use this block to confirm the homepage direction before full development.
+            </h2>
+            <p data-i18n="contactText">
+              The form remains a styled front-end demo for now, but the layout,
+              spacing, and content structure are ready to become part of a full
+              project build.
+            </p>
+          </div>
+
+          <form class="contact-form reveal" data-demo-form>
+            <div class="field-row">
+              <label>
+                <span data-i18n="nameLabel">Name</span>
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Your name"
+                  data-i18n-placeholder="namePlaceholder"
+                  required
+                />
+              </label>
+              <label>
+                <span data-i18n="emailLabel">Email</span>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="name@email.com"
+                  data-i18n-placeholder="emailPlaceholder"
+                  required
+                />
+              </label>
+            </div>
+
+            <label>
+              <span data-i18n="interestLabel">Main Interest</span>
+              <select name="interest" required>
+                <option value="" data-i18n="chooseOne">Choose one</option>
+                <option value="team-sports" data-i18n="optionTeamSports">Team sports</option>
+                <option value="training" data-i18n="optionTraining">Training gear</option>
+                <option value="outdoor-play" data-i18n="optionOutdoorPlay">Outdoor play</option>
+                <option value="mixed" data-i18n="optionMixed">Mixed product range</option>
+              </select>
+            </label>
+
+            <label>
+              <span data-i18n="messageLabel">Message</span>
+              <textarea
+                name="message"
+                rows="5"
+                placeholder="Tell us what style or product direction you want to keep."
+                data-i18n-placeholder="messagePlaceholder"
+                required
+              ></textarea>
+            </label>
+
+            <button class="button button--primary" type="submit" data-i18n="sendFeedback">
+              Send Feedback
+            </button>
+            <p class="form-status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="shell footer-layout">
+        <div class="footer-brand">
+          <a class="logo logo--footer" href="#home" aria-label="MaxPlus home" data-i18n-aria-label="logoHome">
+            <span class="logo__mark">MP</span>
+            <span class="logo__text">
+              <strong>MAXPLUS</strong>
+              <small data-i18n="logoSub">Sporting Goods</small>
+            </span>
+          </a>
+          <p data-i18n="footerText">
+            Sporting goods homepage concept with full-width hero and featured
+            product cards for style approval.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <div>
+            <strong data-i18n="footerContactTitle">Contact</strong>
+            <a href="mailto:hello@maxplus-sport.com">hello@maxplus-sport.com</a>
+            <a href="tel:+18005550199">+1 (800) 555-0199</a>
+          </div>
+          <div>
+            <strong data-i18n="footerSocialTitle">Social</strong>
+            <a href="/">Instagram</a>
+            <a href="/">Facebook</a>
+            <a href="/">YouTube</a>
+            <a href="/">TikTok</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="shell footer-meta">
+        <span data-i18n="footerMeta1">© 2026 MaxPlus Sporting Goods. All rights reserved.</span>
+        <span data-i18n="footerMeta2">Concept C: sporting goods homepage.</span>
+      </div>
+    </footer>
+
+    <div class="subscribe-widget" id="newsletter-sporting" data-subscribe-widget>
+      <button
+        class="subscribe-widget__toggle"
+        type="button"
+        aria-expanded="false"
+        aria-controls="subscribe-panel-sporting"
+        data-i18n="subscribe"
+      >
+        Subscribe
+      </button>
+
+      <div class="subscribe-widget__panel" id="subscribe-panel-sporting">
+        <p class="eyebrow" data-i18n="subscribeEyebrow">Join The Team</p>
+        <h3 data-i18n="subscribeTitle">Get product drops and launch updates.</h3>
+        <form class="subscribe-form" data-demo-form>
+          <label
+            class="sr-only"
+            for="subscribe-email-sporting"
+            data-i18n="emailLabel"
+          >
+            Email
+          </label>
+          <input
+            id="subscribe-email-sporting"
+            type="email"
+            name="email"
+            placeholder="Email address"
+            data-i18n-placeholder="subscribePlaceholder"
+            required
+          />
+          <button class="button button--primary" type="submit" data-i18n="joinButton">Join</button>
+          <p class="form-status" aria-live="polite"></p>
+        </form>
+      </div>
+    </div>
+
+    <script src="./script-sporting.js"></script>
+  </body>
+</html>

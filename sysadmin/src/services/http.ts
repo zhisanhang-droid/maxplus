@@ -1,0 +1,71 @@
+import { API_BASE_URL } from "./config";
+import { buildSecureEnvelope } from "./security";
+
+interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  errorCode?: string | null;
+  details?: unknown;
+  data: T;
+}
+
+interface PostOptions {
+  token?: string | null;
+  secure?: boolean;
+}
+
+export async function apiPost<T>(
+  path: string,
+  payload: unknown,
+  options: PostOptions = {}
+): Promise<T> {
+  try {
+    const body = options.secure ? { envelope: await buildSecureEnvelope(payload) } : payload ?? {};
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json"
+    };
+
+    if (options.token) {
+      headers.Authorization = `Bearer ${options.token}`;
+    }
+
+    const response = await fetch(`${API_BASE_URL}${path}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(body)
+    });
+
+    const contentType = response.headers.get("content-type") || "";
+    const result = contentType.includes("application/json")
+      ? ((await response.json()) as ApiResponse<T>)
+      : ({
+          success: response.ok,
+          message: await response.text(),
+          data: null as T
+        } satisfies ApiResponse<T>);
+
+    if (!response.ok || !result.success) {
+      if (result.errorCode === "CORS_NOT_ALLOWED") {
+        throw new Error(
+          `${result.message} 当前来源可能未加入后端允许列表。`
+        );
+      }
+
+      throw new Error(result.message || "请求失败。");
+    }
+
+    return result.data;
+  } catch (error) {
+    if (error instanceof TypeError) {
+      throw new Error(
+        "网络请求失败。可能原因：后端未启动、接口地址错误、端口不通，或浏览器被 CORS 拦截。"
+      );
+    }
+
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("未知请求错误。");
+  }
+}

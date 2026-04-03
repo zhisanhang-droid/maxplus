@@ -1,0 +1,38 @@
+<svg width="1600" height="980" viewBox="0 0 1600 980" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="980" fill="#0C1B30"/>
+  <rect width="1600" height="980" fill="url(#sky)"/>
+  <rect y="630" width="1600" height="350" fill="url(#field)"/>
+  <rect y="676" width="1600" height="12" fill="rgba(255,255,255,0.34)"/>
+  <circle cx="1185" cy="192" r="88" fill="rgba(255,255,255,0.14)"/>
+  <circle cx="1185" cy="192" r="38" fill="rgba(255,255,255,0.22)"/>
+  <rect x="1008" y="136" width="404" height="440" rx="24" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.12)"/>
+  <path d="M1056 544C1116 454 1182 390 1272 344C1324 318 1380 300 1438 286" stroke="rgba(255,255,255,0.24)" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="1318" cy="306" r="66" fill="#FF7A3F"/>
+  <path d="M1292 270C1306 262 1333 260 1352 270" stroke="#FFF2EA" stroke-width="6" stroke-linecap="round"/>
+  <path d="M1276 302C1298 292 1338 292 1360 302" stroke="#FFF2EA" stroke-width="6" stroke-linecap="round"/>
+  <path d="M1285 336C1307 326 1330 326 1352 336" stroke="#FFF2EA" stroke-width="6" stroke-linecap="round"/>
+  <rect x="1168" y="436" width="164" height="20" rx="10" fill="#173053"/>
+  <rect x="1124" y="478" width="252" height="18" rx="9" fill="#24456F"/>
+  <rect x="1082" y="518" width="336" height="18" rx="9" fill="#355D8F"/>
+  <path d="M914 468C960 468 984 438 984 396C984 352 954 324 914 320C874 324 844 352 844 396C844 438 868 468 914 468Z" fill="#122B4A"/>
+  <rect x="892" y="468" width="44" height="118" rx="22" fill="#122B4A"/>
+  <path d="M892 500L834 554" stroke="#122B4A" stroke-width="28" stroke-linecap="round"/>
+  <path d="M936 504L1004 544" stroke="#122B4A" stroke-width="28" stroke-linecap="round"/>
+  <path d="M902 586L866 690" stroke="#122B4A" stroke-width="28" stroke-linecap="round"/>
+  <path d="M930 586L986 690" stroke="#FF6A2A" stroke-width="28" stroke-linecap="round"/>
+  <circle cx="1008" cy="722" r="54" fill="#FF6A2A"/>
+  <path d="M986 690L976 646" stroke="#FF6A2A" stroke-width="22" stroke-linecap="round"/>
+  <path d="M1008 704H1248" stroke="rgba(255,255,255,0.16)" stroke-width="6" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="sky" x1="234" y1="0" x2="1248" y2="784" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#173053"/>
+      <stop offset="0.5" stop-color="#24456F"/>
+      <stop offset="1" stop-color="#355D8F"/>
+    </linearGradient>
+    <linearGradient id="field" x1="800" y1="630" x2="800" y2="980" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#638A4D"/>
+      <stop offset="1" stop-color="#2B4A2E"/>
+    </linearGradient>
+  </defs>
+</svg>
+

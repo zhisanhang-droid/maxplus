@@ -1,9 +1,9 @@
 const { createApp } = require("./app");
 const { env } = require("./config/env");
-const { initializeDatabase } = require("./bootstrap/initDatabase");
+const { prepareRuntime } = require("./bootstrap/prepareRuntime");
 
 async function startServer() {
-  await initializeDatabase();
+  await prepareRuntime();
 
   const app = createApp();
 

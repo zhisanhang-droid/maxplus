@@ -134,6 +134,36 @@ function buildSafeSlug(value, fallbackSlug = "", defaultSlug = "") {
   return slugify(defaultSlug || "", fallbackSlug || "");
 }
 
+function getManagedCategoryLabel(tableName) {
+  return tableName === "video_categories" ? "视频分类" : "分类";
+}
+
+async function ensureManagedCategoryUniqueness(tableName, payload, current = null) {
+  const categoryLabel = getManagedCategoryLabel(tableName);
+
+  if (!current || payload.name !== current.name) {
+    const duplicateNameRows = await query(
+      `SELECT id FROM ${tableName} WHERE name = ? AND id <> ? LIMIT 1`,
+      [payload.name, payload.id]
+    );
+
+    if (duplicateNameRows.length > 0) {
+      throw new HttpError(400, `${categoryLabel}名称已存在。为了保证层级关系，请使用不同名称。`);
+    }
+  }
+
+  if (!current || payload.slug !== current.slug) {
+    const duplicateSlugRows = await query(
+      `SELECT id FROM ${tableName} WHERE slug = ? AND id <> ? LIMIT 1`,
+      [payload.slug, payload.id]
+    );
+
+    if (duplicateSlugRows.length > 0) {
+      throw new HttpError(400, `${categoryLabel} Slug 已存在，请修改后重试。`);
+    }
+  }
+}
+
 function mapCategory(row) {
   return {
     id: row.id,
@@ -542,6 +572,8 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
   if (!payload.name || !payload.slug) {
     throw new HttpError(400, "分类名称和 Slug 不能为空。");
   }
+
+  await ensureManagedCategoryUniqueness(tableName, payload, current);
 
   if (current) {
     if (includeFilterConfig) {

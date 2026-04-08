@@ -175,7 +175,7 @@ const submit = () => {
           placeholder="支持 YouTube、Vimeo、Bilibili、直链 MP4 或可嵌入外链"
         />
         <div class="editor-form__hint">
-          填写 YouTube 的 watch、share、shorts 等外链时，前台会自动转成 iframe 嵌入播放。
+          支持直接粘贴 YouTube 官方 iframe、embed 链接，或 watch、share、shorts 外链；前台会按官方嵌入地址播放。
         </div>
       </el-form-item>
 

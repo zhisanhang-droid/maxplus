@@ -60,6 +60,58 @@ async function login(input) {
   };
 }
 
+async function resetPasswordWithRecovery(input) {
+  const username = sanitizeString(input.username, { max: 80 });
+  const recoveryKey = typeof input.recoveryKey === "string" ? input.recoveryKey.trim() : "";
+  const password = typeof input.password === "string" ? input.password.trim() : "";
+  const confirmPassword =
+    typeof input.confirmPassword === "string" ? input.confirmPassword.trim() : "";
+
+  if (!username || !recoveryKey || !password || !confirmPassword) {
+    throw new HttpError(400, "请完整填写账号、恢复密钥和新密码。");
+  }
+
+  if (password.length < 8) {
+    throw new HttpError(400, "新密码至少 8 位。");
+  }
+
+  if (password !== confirmPassword) {
+    throw new HttpError(400, "两次输入的新密码不一致。");
+  }
+
+  if (!env.adminRecoveryKey || recoveryKey !== env.adminRecoveryKey) {
+    throw new HttpError(401, "恢复密钥错误。");
+  }
+
+  const rows = await query(
+    `SELECT id, username, role
+     FROM admin_users
+     WHERE username = ?
+     LIMIT 1`,
+    [username]
+  );
+  const admin = rows[0];
+
+  if (!admin) {
+    throw new HttpError(404, "管理员账号不存在。");
+  }
+
+  const passwordHash = await bcrypt.hash(password, 10);
+
+  await query(
+    `UPDATE admin_users
+     SET password_hash = ?, status = 1
+     WHERE id = ?`,
+    [passwordHash, admin.id]
+  );
+
+  return {
+    username: admin.username,
+    role: admin.role
+  };
+}
+
 module.exports = {
-  login
+  login,
+  resetPasswordWithRecovery
 };

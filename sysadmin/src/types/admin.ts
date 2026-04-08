@@ -6,6 +6,13 @@ export interface AdminSession {
   loggedInAt: string;
 }
 
+export interface AdminPasswordRecoveryPayload {
+  username: string;
+  recoveryKey: string;
+  password: string;
+  confirmPassword: string;
+}
+
 export interface BrandSettings {
   brandName: string;
   siteTitle: string;

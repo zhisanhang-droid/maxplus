@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import BackToTopRocket from "./components/BackToTopRocket.vue";
 import CookieBanner from "./components/CookieBanner.vue";
 import SeasonalThemeLayer from "./components/SeasonalThemeLayer.vue";
@@ -13,10 +13,6 @@ import { usePublicData } from "./composables/usePublicData";
 const publicData = usePublicData();
 const content = computed(() => publicData.siteContent.value);
 const siteTheme = computed(() => content.value.theme);
-
-onMounted(() => {
-  void publicData.loadPublicData();
-});
 
 useDocumentMeta(content);
 useSiteTheme(siteTheme);

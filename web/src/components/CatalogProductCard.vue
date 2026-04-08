@@ -67,13 +67,6 @@ const mediaPhotoClass = computed(() => [
   }
 ]);
 
-const stockClass = computed(() => [
-  "catalog-card__stock",
-  {
-    "catalog-card__stock--compact": props.variant === "compact"
-  }
-]);
-
 const chipItemClass = computed(() => [
   {
     "catalog-card__chip-item--compact": props.variant === "compact"
@@ -81,6 +74,7 @@ const chipItemClass = computed(() => [
 ]);
 
 const summaryClass = computed(() => [
+  "catalog-card__summary",
   {
     "catalog-card__summary--compact": props.variant === "compact"
   }
@@ -108,12 +102,9 @@ const productRoute = computed(() => buildProductRoute(props.product.slug));
       <div v-else :class="[mediaClass, product.visualClass]"></div>
 
       <div :class="bodyClass">
-        <div class="catalog-card__topline">
-          <div class="catalog-card__labels">
-            <span v-if="holidayBadge" class="catalog-card__holiday-badge">{{ holidayBadge }}</span>
-            <span v-if="product.tag" class="product-card__tag">{{ product.tag }}</span>
-          </div>
-          <span :class="stockClass">{{ product.stockStatus }}</span>
+        <div v-if="holidayBadge || product.tag" class="catalog-card__labels">
+          <span v-if="holidayBadge" class="catalog-card__holiday-badge">{{ holidayBadge }}</span>
+          <span v-if="product.tag" class="product-card__tag">{{ product.tag }}</span>
         </div>
 
         <h3 :class="titleClass">{{ product.title }}</h3>

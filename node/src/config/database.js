@@ -42,8 +42,24 @@ async function withTransaction(handler) {
   }
 }
 
+async function resetPool() {
+  if (!pool) {
+    return;
+  }
+
+  const currentPool = pool;
+  pool = undefined;
+
+  try {
+    await currentPool.end();
+  } catch (error) {
+    console.warn("[database] failed to close pool cleanly", error);
+  }
+}
+
 module.exports = {
   getPool,
   query,
-  withTransaction
+  withTransaction,
+  resetPool
 };

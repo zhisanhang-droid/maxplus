@@ -181,11 +181,9 @@ usePageMeta({
             :style="getMediaStyle(item.coverImage)"
           >
             <span class="video-card__play" aria-hidden="true">▶</span>
-            <span class="video-card__duration">{{ item.duration }}</span>
           </div>
           <div v-else :class="['video-card__media', item.visualClass]">
             <span class="video-card__play" aria-hidden="true">▶</span>
-            <span class="video-card__duration">{{ item.duration }}</span>
           </div>
 
           <div class="video-card__body">

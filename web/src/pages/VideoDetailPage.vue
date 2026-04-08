@@ -6,6 +6,7 @@ import PageBanner from "../components/PageBanner.vue";
 import { usePageMeta } from "../composables/usePageMeta";
 import { usePublicData } from "../composables/usePublicData";
 import { useStructuredData } from "../composables/useStructuredData";
+import { resolveVideoSource } from "../utils/video";
 
 const route = useRoute();
 const { findVideoCategoryBySlug, findVideoBySlug, getRelatedVideos } = usePublicData();
@@ -16,7 +17,11 @@ const relatedVideos = computed(() =>
 );
 
 const getCategoryLabel = (slug: string) =>
-  findVideoCategoryBySlug(slug)?.title ?? "Videos";
+  findVideoCategoryBySlug(slug)?.title ?? "";
+
+const resolvedVideoSource = computed(() =>
+  video.value ? resolveVideoSource(video.value.videoUrl) : null
+);
 
 const getMediaStyle = (imageUrl?: string) => ({
   backgroundImage: `linear-gradient(180deg, rgba(8, 18, 31, 0.12), rgba(8, 18, 31, 0.52)), url(${imageUrl})`
@@ -43,7 +48,10 @@ useStructuredData(
       name: video.value.title,
       description: video.value.summary,
       thumbnailUrl: video.value.coverImage || undefined,
-      embedUrl: video.value.videoUrl || undefined
+      embedUrl:
+        resolvedVideoSource.value?.kind === "iframe"
+          ? resolvedVideoSource.value.src
+          : video.value.videoUrl || undefined
     };
   })
 );
@@ -65,7 +73,6 @@ useStructuredData(
               :url="video.videoUrl"
               :title="video.title"
               :poster="video.coverImage"
-              autoplay
             />
           </div>
 
@@ -75,10 +82,11 @@ useStructuredData(
                 Back to Videos
               </RouterLink>
 
-              <div class="video-library__labels">
-                <span class="video-card__tag">{{ getCategoryLabel(video.categorySlug) }}</span>
-                <span class="video-library__topic">{{ video.topicLabel }}</span>
-                <span class="video-library__topic">{{ video.duration }}</span>
+              <div v-if="getCategoryLabel(video.categorySlug) || video.topicLabel" class="video-library__labels">
+                <span v-if="getCategoryLabel(video.categorySlug)" class="video-card__tag">
+                  {{ getCategoryLabel(video.categorySlug) }}
+                </span>
+                <span v-if="video.topicLabel" class="video-library__topic">{{ video.topicLabel }}</span>
               </div>
 
               <h2 class="video-detail__title">{{ video.title }}</h2>
@@ -110,17 +118,17 @@ useStructuredData(
               :style="getMediaStyle(item.coverImage)"
             >
               <span class="video-card__play" aria-hidden="true">▶</span>
-              <span class="video-card__duration">{{ item.duration }}</span>
             </div>
             <div v-else :class="['video-card__media', item.visualClass]">
               <span class="video-card__play" aria-hidden="true">▶</span>
-              <span class="video-card__duration">{{ item.duration }}</span>
             </div>
 
             <div class="video-card__body">
-              <div class="video-library__labels">
-                <p class="video-card__tag">{{ getCategoryLabel(item.categorySlug) }}</p>
-                <span class="video-library__topic">{{ item.topicLabel }}</span>
+              <div v-if="getCategoryLabel(item.categorySlug) || item.topicLabel" class="video-library__labels">
+                <p v-if="getCategoryLabel(item.categorySlug)" class="video-card__tag">
+                  {{ getCategoryLabel(item.categorySlug) }}
+                </p>
+                <span v-if="item.topicLabel" class="video-library__topic">{{ item.topicLabel }}</span>
               </div>
               <h3>{{ item.title }}</h3>
               <p>{{ item.summary }}</p>

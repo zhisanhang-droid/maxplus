@@ -843,6 +843,19 @@ a {
   width: 100%;
 }
 
+.login-form__text-link {
+  display: inline-flex;
+  justify-content: center;
+  margin-top: 0.9rem;
+  color: var(--admin-navy-2);
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.login-form__text-link:hover {
+  color: var(--admin-orange);
+}
+
 .el-button {
   font-weight: 700;
   border-radius: 8px;

@@ -10,8 +10,8 @@ const router = useRouter();
 const sessionStore = useSessionStore();
 
 const form = reactive({
-  username: "admin",
-  password: "maxplus123",
+  username: "",
+  password: "",
   role: "super-admin" as AdminRole
 });
 
@@ -38,7 +38,7 @@ const submit = async () => {
       <div class="login-card__copy">
         <p class="login-card__eyebrow">Operations Console</p>
         <h1>MaxPlus 独立站后台管理系统</h1>
-        <p>集中管理网站基础设置、商品、视频、博客、首页内容、SEO、询盘和订阅数据。</p>
+        <p>使用安装页创建的管理员账号登录，集中管理网站基础设置、商品、视频、博客、首页内容、SEO、询盘和订阅数据。</p>
 
         <div class="login-card__highlights">
           <article class="login-highlight">
@@ -76,6 +76,8 @@ const submit = async () => {
         <el-button type="primary" class="login-form__button" @click="submit">
           登录系统
         </el-button>
+
+        <RouterLink class="login-form__text-link" to="/recover">忘记密码？</RouterLink>
       </el-form>
     </div>
   </div>

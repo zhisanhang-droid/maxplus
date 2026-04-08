@@ -1,11 +1,25 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useInstallStore } from "../stores/install";
 import { useSessionStore } from "../stores/session";
 
 const routes = [
   {
+    path: "/install",
+    name: "install",
+    component: () => import("../views/InstallView.vue")
+  },
+  {
     path: "/login",
     name: "login",
     component: () => import("../views/LoginView.vue"),
+    meta: {
+      guestOnly: true
+    }
+  },
+  {
+    path: "/recover",
+    name: "recover-password",
+    component: () => import("../views/RecoverPasswordView.vue"),
     meta: {
       guestOnly: true
     }
@@ -180,15 +194,34 @@ export const router = createRouter({
 });
 
 router.beforeEach((to) => {
+  const installStore = useInstallStore();
   const sessionStore = useSessionStore();
+  const isInstallRoute = to.path === "/install";
 
-  if (to.meta.requiresAuth && !sessionStore.isAuthenticated) {
-    return "/login";
-  }
+  return installStore
+    .ensureStatus()
+    .catch(() => installStore.status)
+    .then(() => {
+      if (!installStore.isReady) {
+        if (isInstallRoute) {
+          return true;
+        }
 
-  if (to.meta.guestOnly && sessionStore.isAuthenticated) {
-    return "/dashboard";
-  }
+        return "/install";
+      }
 
-  return true;
+      if (isInstallRoute) {
+        return sessionStore.isAuthenticated ? "/dashboard" : "/login";
+      }
+
+      if (to.meta.requiresAuth && !sessionStore.isAuthenticated) {
+        return "/login";
+      }
+
+      if (to.meta.guestOnly && sessionStore.isAuthenticated) {
+        return "/dashboard";
+      }
+
+      return true;
+    });
 });

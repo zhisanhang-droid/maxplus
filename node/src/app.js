@@ -3,10 +3,12 @@ const cors = require("cors");
 const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
 const { env } = require("./config/env");
+const installRoutes = require("./routes/installRoutes");
 const securityRoutes = require("./routes/securityRoutes");
 const authRoutes = require("./routes/authRoutes");
 const publicRoutes = require("./routes/publicRoutes");
 const adminRoutes = require("./routes/adminRoutes");
+const { requireRuntimeReady } = require("./middleware/runtimeGuard");
 const { notFoundHandler, errorHandler } = require("./middleware/errorHandler");
 
 function isPrivateNetworkHost(hostname) {
@@ -101,7 +103,9 @@ function createApp() {
     })
   );
 
+  app.use(`${env.apiPrefix}/install`, installRoutes);
   app.use(`${env.apiPrefix}/security`, securityRoutes);
+  app.use(requireRuntimeReady);
   app.use(`${env.apiPrefix}/auth`, authRoutes);
   app.use(`${env.apiPrefix}/public`, publicRoutes);
   app.use(`${env.apiPrefix}/admin`, adminRoutes);

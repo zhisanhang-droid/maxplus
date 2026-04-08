@@ -8,11 +8,27 @@ const URL_WITH_PROTOCOL_PATTERN = /^[a-z][a-z0-9+.-]*:\/\//i;
 const URL_LIKE_DOMAIN_PATTERN =
   /^(?:www\.)?(?:youtu\.be|youtube\.com|m\.youtube\.com|music\.youtube\.com|youtube-nocookie\.com|vimeo\.com|player\.vimeo\.com|bilibili\.com|player\.bilibili\.com)\b/i;
 
+function extractIframeSrc(input: string): string {
+  const match = input.match(/<iframe\b[^>]*\bsrc=(["'])(.*?)\1/i);
+
+  if (!match?.[2]) {
+    return "";
+  }
+
+  return match[2].trim().replace(/&amp;/gi, "&");
+}
+
 function normalizeExternalUrl(input: string): string {
   const trimmed = input.trim();
 
   if (!trimmed) {
     return "";
+  }
+
+  const iframeSrc = extractIframeSrc(trimmed);
+
+  if (iframeSrc) {
+    return iframeSrc;
   }
 
   if (URL_WITH_PROTOCOL_PATTERN.test(trimmed)) {
@@ -72,11 +88,7 @@ function extractYouTubeIdFromPath(pathname: string, marker: string): string | nu
 }
 
 function buildYouTubeEmbedUrl(videoId: string, autoplay: boolean, startAt?: number | null): string {
-  const embed = new URL(`https://www.youtube-nocookie.com/embed/${videoId}`);
-
-  embed.searchParams.set("rel", "0");
-  embed.searchParams.set("modestbranding", "1");
-  embed.searchParams.set("playsinline", "1");
+  const embed = new URL(`https://www.youtube.com/embed/${videoId}`);
 
   if (autoplay) {
     embed.searchParams.set("autoplay", "1");
@@ -87,6 +99,14 @@ function buildYouTubeEmbedUrl(videoId: string, autoplay: boolean, startAt?: numb
   }
 
   return embed.toString();
+}
+
+function copyYouTubeParam(source: URL, target: URL, key: string) {
+  const value = source.searchParams.get(key);
+
+  if (value) {
+    target.searchParams.set(key, value);
+  }
 }
 
 function buildYouTubeEmbed(url: URL, autoplay: boolean): string | null {
@@ -107,9 +127,23 @@ function buildYouTubeEmbed(url: URL, autoplay: boolean): string | null {
     host === "music.youtube.com" ||
     host === "youtube-nocookie.com"
   ) {
+    if (url.pathname.startsWith("/embed/")) {
+      return appendAutoplay(url.toString(), autoplay);
+    }
+
     if (url.pathname.startsWith("/watch")) {
       const id = url.searchParams.get("v") || url.searchParams.get("vi");
-      return id ? buildYouTubeEmbedUrl(id, autoplay, startAt) : null;
+
+      if (!id) {
+        return null;
+      }
+
+      const embed = new URL(buildYouTubeEmbedUrl(id, autoplay, startAt));
+      copyYouTubeParam(url, embed, "si");
+      copyYouTubeParam(url, embed, "list");
+      copyYouTubeParam(url, embed, "index");
+      copyYouTubeParam(url, embed, "end");
+      return embed.toString();
     }
 
     const pathId =
@@ -119,7 +153,12 @@ function buildYouTubeEmbed(url: URL, autoplay: boolean): string | null {
       extractYouTubeIdFromPath(url.pathname, "/v/");
 
     if (pathId) {
-      return buildYouTubeEmbedUrl(pathId, autoplay, startAt);
+      const embed = new URL(buildYouTubeEmbedUrl(pathId, autoplay, startAt));
+      copyYouTubeParam(url, embed, "si");
+      copyYouTubeParam(url, embed, "list");
+      copyYouTubeParam(url, embed, "index");
+      copyYouTubeParam(url, embed, "end");
+      return embed.toString();
     }
   }
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
-import CategoryEditorDialog from "../../components/catalog/CategoryEditorDialog.vue";
+import VideoCategoryEditorDialog from "../../components/media/VideoCategoryEditorDialog.vue";
 import TablePagination from "../../components/shared/TablePagination.vue";
 import { useTablePagination } from "../../composables/useTablePagination";
 import { useCatalogStore } from "../../stores/catalog";
@@ -15,6 +15,7 @@ interface VideoCategoryTreeRow extends VideoCategoryRecord {
 const catalogStore = useCatalogStore();
 const dialogVisible = ref(false);
 const currentRecord = ref<VideoCategoryRecord | null>(null);
+const ROOT_PARENT_LABEL = "顶级分类";
 
 const categoryTree = computed<VideoCategoryTreeRow[]>(() => {
   const rowMap = new Map<string, VideoCategoryTreeRow>();
@@ -28,14 +29,27 @@ const categoryTree = computed<VideoCategoryTreeRow[]>(() => {
   }
 
   const roots: VideoCategoryTreeRow[] = [];
+  const resolveParent = (row: VideoCategoryTreeRow) =>
+    Array.from(rowMap.values())
+      .filter((item) => item.id !== row.id && item.name === row.parent)
+      .sort((left, right) => {
+        const leftScore = left.parent === ROOT_PARENT_LABEL ? 0 : 1;
+        const rightScore = right.parent === ROOT_PARENT_LABEL ? 0 : 1;
+
+        if (leftScore !== rightScore) {
+          return leftScore - rightScore;
+        }
+
+        return left.sortOrder - right.sortOrder;
+      })[0];
 
   for (const row of rowMap.values()) {
-    if (!row.parent || row.parent === "顶级分类") {
+    if (!row.parent || row.parent === ROOT_PARENT_LABEL) {
       roots.push(row);
       continue;
     }
 
-    const parent = Array.from(rowMap.values()).find((item) => item.name === row.parent);
+    const parent = resolveParent(row);
 
     if (parent) {
       parent.children = parent.children || [];
@@ -65,7 +79,7 @@ const categoryTree = computed<VideoCategoryTreeRow[]>(() => {
 
   return sortRows(roots);
 });
-const { currentPage, pageSize, pageSizes, total, pagedItems } = useTablePagination(categoryTree);
+const { currentPage, pageSize, pageSizes, total, pagedItems, resetPagination } = useTablePagination(categoryTree);
 
 const openCreate = () => {
   currentRecord.value = null;
@@ -73,21 +87,16 @@ const openCreate = () => {
 };
 
 const openEdit = (record: VideoCategoryRecord) => {
-  currentRecord.value = {
-    id: record.id,
-    name: record.name,
-    slug: record.slug,
-    parent: record.parent,
-    sortOrder: record.sortOrder,
-    enabled: record.enabled,
-    seoTitle: record.seoTitle
-  };
+  currentRecord.value = { ...record };
   dialogVisible.value = true;
 };
 
 const saveCategory = async (record: VideoCategoryRecord) => {
   try {
     await catalogStore.saveVideoCategory(record);
+    resetPagination();
+    dialogVisible.value = false;
+    currentRecord.value = null;
     ElMessage.success("视频分类已保存。");
   } catch (error) {
     ElMessage.error(error instanceof Error ? error.message : "视频分类保存失败。");
@@ -120,7 +129,7 @@ const removeCategory = async (record: VideoCategoryRecord) => {
         :data="pagedItems"
         stripe
         row-key="id"
-        :default-expand-all="false"
+        :default-expand-all="true"
         :tree-props="{ children: 'children' }"
       >
         <el-table-column prop="name" label="分类名称" min-width="220" />
@@ -151,9 +160,10 @@ const removeCategory = async (record: VideoCategoryRecord) => {
       :total="total"
     />
 
-    <CategoryEditorDialog
+    <VideoCategoryEditorDialog
       v-model="dialogVisible"
       :category="currentRecord"
+      :categories="catalogStore.videoCategories"
       @save="saveCategory"
     />
   </div>

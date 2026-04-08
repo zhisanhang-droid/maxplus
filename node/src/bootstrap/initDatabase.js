@@ -657,12 +657,12 @@ async function tableHasRows(tableName) {
   return Number(rows[0]?.count ?? 0) > 0;
 }
 
-async function seedAdminTable() {
+async function seedAdminTable(adminUsers = seedAdminUsers) {
   if (await tableHasRows("admin_users")) {
     return;
   }
 
-  for (const item of seedAdminUsers) {
+  for (const item of adminUsers) {
     await query(
       `INSERT INTO admin_users (id, username, password_hash, role)
        VALUES (?, ?, ?, ?)`,
@@ -1140,11 +1140,11 @@ async function seedCrmTables() {
   decryptField(encryptedSample);
 }
 
-async function initializeDatabase() {
+async function initializeDatabase(options = {}) {
   await ensureDatabaseExists();
   await createTables();
   await migrateSchema();
-  await seedAdminTable();
+  await seedAdminTable(options.adminUsers);
   await seedSettingsTables();
   await seedCatalogTables();
   await seedCrmTables();

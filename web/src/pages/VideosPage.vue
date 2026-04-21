@@ -1,93 +1,33 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import PageBanner from "../components/PageBanner.vue";
 import { usePublicData } from "../composables/usePublicData";
 import { usePageMeta } from "../composables/usePageMeta";
-import type { VideoCategory } from "../types/catalog";
 
 const { videoCategories, videos: tutorialVideos } = usePublicData();
 
-const activeParentCategory = ref("all");
 const activeCategory = ref("all");
 
-const videoCategoryMap = computed(() => new Map(videoCategories.value.map((category) => [category.slug, category])));
-
-const primaryCategoryOptions = computed(() => {
-  const parentTitlesWithVideos = new Set(
-    videoCategories.value
-      .filter(
-        (category) =>
-          Boolean(category.parentTitle) &&
-          tutorialVideos.value.some((video) => video.categorySlug === category.slug)
-      )
-      .map((category) => category.parentTitle as string)
-  );
-
-  return videoCategories.value.filter(
-    (category) => !category.parentTitle && parentTitlesWithVideos.has(category.title)
-  );
-});
-
-const activeParentTitle = computed(() =>
-  primaryCategoryOptions.value.find((category) => category.slug === activeParentCategory.value)?.title ?? ""
-);
-
-const secondaryCategoryOptions = computed(() => {
-  if (!activeParentTitle.value) {
-    return [];
-  }
-
-  return videoCategories.value.filter(
-    (category) =>
-      category.parentTitle === activeParentTitle.value &&
-      tutorialVideos.value.some((video) => video.categorySlug === category.slug)
-  );
+const categoryOptions = computed(() => {
+  const usedSlugs = new Set(tutorialVideos.value.map((v) => v.categorySlug).filter(Boolean));
+  return videoCategories.value.filter((c) => usedSlugs.has(c.slug));
 });
 
 const filteredVideos = computed(() =>
-  tutorialVideos.value.filter((video) => {
-    if (activeParentCategory.value === "all") {
-      return true;
-    }
-
-    const videoCategory = videoCategoryMap.value.get(video.categorySlug);
-
-    if (!videoCategory || videoCategory.parentTitle !== activeParentTitle.value) {
-      return false;
-    }
-
-    if (activeCategory.value === "all") {
-      return true;
-    }
-
-    return video.categorySlug === activeCategory.value;
-  })
+  activeCategory.value === "all"
+    ? tutorialVideos.value
+    : tutorialVideos.value.filter((v) => v.categorySlug === activeCategory.value)
 );
 
 const activeCategoryLabel = computed(() => {
-  if (activeParentCategory.value === "all") {
-    return "All Categories";
-  }
-
-  if (activeCategory.value !== "all") {
-    const secondary = secondaryCategoryOptions.value.find((item) => item.slug === activeCategory.value);
-
-    if (secondary) {
-      return `${activeParentTitle.value} / ${secondary.title}`;
-    }
-  }
-
-  return activeParentTitle.value || "All Categories";
+  if (activeCategory.value === "all") return "All Categories";
+  return categoryOptions.value.find((c) => c.slug === activeCategory.value)?.title ?? "All Categories";
 });
 
 const getCategoryLabel = (slug: string) => {
-  const category = videoCategoryMap.value.get(slug);
-
-  if (!category) {
-    return "Videos";
-  }
-
-  return category.parentTitle ? `${category.parentTitle} / ${category.title}` : category.title;
+  const cat = videoCategories.value.find((c) => c.slug === slug);
+  if (!cat) return "Videos";
+  return cat.parentTitle ? `${cat.parentTitle} / ${cat.title}` : cat.title;
 };
 
 const getMediaStyle = (imageUrl?: string) => ({
@@ -96,13 +36,9 @@ const getMediaStyle = (imageUrl?: string) => ({
 
 const getVideoLink = (slug: string) => `/videos/${encodeURIComponent(slug)}`;
 
-watch(activeParentCategory, () => {
-  activeCategory.value = "all";
-});
-
 usePageMeta({
   title: "Videos | MaxPlus Sporting Goods",
-  description: "Browse MaxPlus tutorial videos in a grid layout and open each guide on its own playback page."
+  description: "Browse MaxPlus tutorial videos and filter by category."
 });
 </script>
 
@@ -113,44 +49,17 @@ usePageMeta({
     <div class="shell">
       <div class="video-library__filters reveal" v-reveal>
         <div class="video-library__filter-group">
-          <span>Category</span>
-          <div class="video-library__chips">
-            <button
-              type="button"
-              :class="['video-library__chip', { 'is-active': activeParentCategory === 'all' }]"
-              @click="activeParentCategory = 'all'"
-            >
-              All Videos
-            </button>
-
-            <button
-              v-for="item in primaryCategoryOptions"
-              :key="item.slug"
-              type="button"
-              :class="['video-library__chip', { 'is-active': activeParentCategory === item.slug }]"
-              @click="activeParentCategory = item.slug"
-            >
-              {{ item.title }}
-            </button>
-          </div>
-        </div>
-
-        <div
-          v-if="activeParentCategory !== 'all' && secondaryCategoryOptions.length"
-          class="video-library__filter-group"
-        >
-          <span>Subcategory</span>
           <div class="video-library__chips">
             <button
               type="button"
               :class="['video-library__chip', { 'is-active': activeCategory === 'all' }]"
               @click="activeCategory = 'all'"
             >
-              All In {{ activeParentTitle }}
+              All Videos
             </button>
 
             <button
-              v-for="item in secondaryCategoryOptions"
+              v-for="item in categoryOptions"
               :key="item.slug"
               type="button"
               :class="['video-library__chip', { 'is-active': activeCategory === item.slug }]"
@@ -199,8 +108,8 @@ usePageMeta({
       </div>
 
       <div v-else class="catalog-empty reveal is-visible">
-        <h3>No videos in this filter.</h3>
-        <p>Try another video category to find the corresponding tutorial.</p>
+        <h3>No videos in this category.</h3>
+        <p>Try another category to browse tutorials.</p>
       </div>
     </div>
   </section>

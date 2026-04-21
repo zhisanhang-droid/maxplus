@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { computed, reactive, watch } from "vue";
+import { useSessionStore } from "../../stores/session";
+import ImageUploader from "../shared/ImageUploader.vue";
 import type { VideoCategoryRecord, VideoRecord } from "../../types/admin";
+
+const sessionStore = useSessionStore();
+const token = computed(() => sessionStore.token);
 
 interface VideoCategoryOption {
   value: string;
@@ -165,7 +170,7 @@ const submit = () => {
           </el-select>
         </el-form-item>
         <el-form-item label="封面地址">
-          <el-input v-model="draft.cover" />
+          <ImageUploader v-model="draft.cover" :token="token" />
         </el-form-item>
       </div>
 

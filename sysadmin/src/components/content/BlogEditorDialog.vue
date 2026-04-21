@@ -1,6 +1,11 @@
 <script setup lang="ts">
-import { reactive, watch } from "vue";
+import { computed, reactive, watch } from "vue";
+import { useSessionStore } from "../../stores/session";
+import ImageUploader from "../shared/ImageUploader.vue";
 import type { BlogRecord } from "../../types/admin";
+
+const sessionStore = useSessionStore();
+const token = computed(() => sessionStore.token);
 
 const props = defineProps<{
   modelValue: boolean;
@@ -86,6 +91,10 @@ const submit = () => {
             { label: '已发布', value: 'published' }
           ]"
         />
+      </el-form-item>
+
+      <el-form-item label="封面图">
+        <ImageUploader v-model="draft.coverImage" :token="token" />
       </el-form-item>
 
       <el-form-item label="摘要">

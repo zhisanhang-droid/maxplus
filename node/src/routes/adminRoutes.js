@@ -1,8 +1,36 @@
 const express = require("express");
+const multer = require("multer");
+const path = require("path");
+const crypto = require("crypto");
 const { requireAuth } = require("../middleware/auth");
 const { asyncHandler } = require("../utils/asyncHandler");
-const { ok } = require("../utils/response");
+const { ok, fail } = require("../utils/response");
 const { resolveRequestPayload } = require("../utils/request");
+
+const UPLOADS_DIR = path.join(__dirname, "../../../uploads");
+const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const MAX_SIZE = 5 * 1024 * 1024; // 5MB
+
+const storage = multer.diskStorage({
+  destination: UPLOADS_DIR,
+  filename(req, file, cb) {
+    const ext = path.extname(file.originalname).toLowerCase() || ".jpg";
+    const name = crypto.randomBytes(12).toString("hex");
+    cb(null, `${name}${ext}`);
+  }
+});
+
+const upload = multer({
+  storage,
+  limits: { fileSize: MAX_SIZE },
+  fileFilter(req, file, cb) {
+    if (ALLOWED_TYPES.includes(file.mimetype)) {
+      cb(null, true);
+    } else {
+      cb(new Error("只支持 JPG、PNG、WebP、GIF 格式"));
+    }
+  }
+});
 const {
   getSiteSettings,
   saveSiteSettings,
@@ -42,6 +70,19 @@ const { listLogs, addLog, getDashboardSummary } = require("../services/systemSer
 const router = express.Router();
 
 router.use(requireAuth);
+
+router.post(
+  "/upload",
+  upload.single("file"),
+  asyncHandler(async (req, res) => {
+    if (!req.file) {
+      return fail(res, 400, "未收到文件");
+    }
+    const host = `${req.protocol}://${req.get("host")}`;
+    const url = `${host}/uploads/${req.file.filename}`;
+    return ok(res, { url }, "上传成功");
+  })
+);
 
 async function writeOperationLog(req, message, metadata = null) {
   await addLog({

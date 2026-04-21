@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, watch } from "vue";
+import { useSessionStore } from "../../stores/session";
+import ImageUploader from "../shared/ImageUploader.vue";
 import type { CategoryRecord, ProductRecord } from "../../types/admin";
 
 const props = defineProps<{
@@ -12,6 +14,9 @@ const emit = defineEmits<{
   "update:modelValue": [value: boolean];
   save: [value: ProductRecord];
 }>();
+
+const sessionStore = useSessionStore();
+const token = computed(() => sessionStore.token);
 
 const createDraft = (): ProductRecord => ({
   id: "",
@@ -51,16 +56,6 @@ const tagsText = computed({
   }
 });
 
-const galleryText = computed({
-  get: () => draft.gallery.join("\n"),
-  set: (value: string) => {
-    draft.gallery = value
-      .split(/\r?\n|,/)
-      .map((item) => item.trim())
-      .filter(Boolean);
-  }
-});
-
 watch(
   () => props.product,
   (value) => {
@@ -69,12 +64,27 @@ watch(
   { immediate: true }
 );
 
+function addGallerySlot() {
+  draft.gallery = [...draft.gallery, ""];
+}
+
+function updateGalleryItem(index: number, url: string) {
+  const updated = [...draft.gallery];
+  updated[index] = url;
+  draft.gallery = updated;
+}
+
+function removeGalleryItem(index: number) {
+  draft.gallery = draft.gallery.filter((_, i) => i !== index);
+}
+
 const close = () => emit("update:modelValue", false);
 
 const submitWithStatus = (status: ProductRecord["status"]) => {
   draft.status = status;
   emit("save", {
     ...draft,
+    gallery: draft.gallery.filter(Boolean),
     id: draft.id || `prd-${Date.now()}`
   });
   close();
@@ -171,17 +181,36 @@ const submitWithStatus = (status: ProductRecord["status"]) => {
         </div>
       </div>
 
-      <el-form-item label="主图地址">
-        <el-input v-model="draft.heroImage" />
+      <el-form-item label="主图">
+        <ImageUploader v-model="draft.heroImage" :token="token" />
       </el-form-item>
 
       <el-form-item label="详情图集">
-        <el-input
-          v-model="galleryText"
-          type="textarea"
-          :rows="4"
-          placeholder="每行一张图片地址，也可用英文逗号分隔"
-        />
+        <div class="gallery-grid">
+          <div
+            v-for="(url, index) in draft.gallery"
+            :key="index"
+            class="gallery-grid__item"
+          >
+            <ImageUploader
+              :model-value="url"
+              :token="token"
+              @update:model-value="updateGalleryItem(index, $event)"
+            />
+            <el-button
+              size="small"
+              type="danger"
+              plain
+              class="gallery-grid__del"
+              @click="removeGalleryItem(index)"
+            >
+              移除
+            </el-button>
+          </div>
+          <el-button class="gallery-grid__add" @click="addGallerySlot">
+            + 添加图片
+          </el-button>
+        </div>
       </el-form-item>
 
       <div class="editor-grid editor-grid--2">
@@ -214,3 +243,27 @@ const submitWithStatus = (status: ProductRecord["status"]) => {
     </template>
   </el-dialog>
 </template>
+
+<style scoped>
+.gallery-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+.gallery-grid__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.gallery-grid__del {
+  width: 100%;
+}
+.gallery-grid__add {
+  width: 160px;
+  height: 120px;
+  border: 1px dashed #dcdfe6;
+  border-radius: 6px;
+  color: #909399;
+}
+</style>

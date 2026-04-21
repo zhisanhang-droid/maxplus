@@ -1,1 +1,0 @@
-import{s as n,p as g,v as i,n as u,x as m}from"./index-Ccx40_yI.js";import{i as p}from"./seed-DuagaXqs.js";const t="maxplus-sysadmin-logs",l=n("system",()=>{const e=g(i(t,p));return u(e,s=>m(t,s),{deep:!0}),{logs:e,pushLog:(s,o,a,r)=>{e.value.unshift({id:`log-${Date.now()}`,type:s,actor:o,role:a,message:r,createdAt:new Date().toLocaleString()})}}});export{l as u};

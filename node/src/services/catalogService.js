@@ -911,7 +911,7 @@ async function saveVideo(input) {
       defaultValue: current?.duration || "00:00"
     }),
     status: normalizeEnum(input.status, ["draft", "published"], current?.status || "draft"),
-    cover: sanitizeString(input.cover, { max: 255, defaultValue: current?.cover || "" }),
+    cover: sanitizeString(input.cover, { max: 2000, defaultValue: current?.cover || "" }),
     videoUrl: sanitizeString(input.videoUrl, {
       max: 1000,
       defaultValue: current?.videoUrl || ""
@@ -933,6 +933,14 @@ async function saveVideo(input) {
 
   if (!payload.title || !payload.slug || !payload.categoryId) {
     throw new HttpError(400, "视频标题、Slug、分类不能为空。");
+  }
+
+  const duplicateSlugRows = await query(
+    `SELECT id FROM videos WHERE slug = ? AND id <> ? LIMIT 1`,
+    [payload.slug, payload.id]
+  );
+  if (duplicateSlugRows.length > 0) {
+    throw new HttpError(400, "视频 Slug 已存在，请修改 Slug 字段以区分视频。");
   }
 
   if (current) {

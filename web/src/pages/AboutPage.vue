@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import HeroOpeningScene from "../components/HeroOpeningScene.vue";
 import HighlightsSection from "../components/HighlightsSection.vue";
+import PageBanner from "../components/PageBanner.vue";
 import { usePageMeta } from "../composables/usePageMeta";
 import { usePublicData } from "../composables/usePublicData";
 
@@ -17,19 +17,7 @@ usePageMeta(
 
 <template>
   <main class="brand-story-page">
-    <section class="section brand-story-opening">
-      <div class="shell">
-        <div class="brand-story-opening__frame">
-          <HeroOpeningScene class="brand-story-opening__scene" :persist-at-end="true" :show-skip="false" />
-        </div>
-
-        <div class="brand-story-opening__intro reveal" v-reveal>
-          <p class="eyebrow">{{ brandStory.heroEyebrow }}</p>
-          <h1>{{ brandStory.heroTitle }}</h1>
-          <p>{{ brandStory.heroText }}</p>
-        </div>
-      </div>
-    </section>
+    <PageBanner :eyebrow="brandStory.heroEyebrow" :title="brandStory.heroTitle" :text="brandStory.heroText" />
 
     <section class="section story-zone">
       <div class="shell story-layout">

@@ -90,6 +90,13 @@ export function buildSiteContent(
   content.theme = buildSiteThemeContent(payload.siteSettings.theme);
   content.header.logoSub = payload.siteSettings.brand.brandName || content.header.logoSub;
 
+  const globalBuyUrl = payload.siteSettings.brand.defaultBuyUrl?.trim() || "";
+  const globalBuyLabel = payload.siteSettings.brand.defaultBuyLabel?.trim() || "";
+  if (globalBuyUrl) {
+    content.header.ctaHref = globalBuyUrl;
+    content.header.ctaLabel = globalBuyLabel || content.header.ctaLabel;
+  }
+
   if (enabledHeroSlides.length) {
     content.hero.dotLabels = enabledHeroSlides.map((_, index) => `Show slide ${index + 1}`);
     content.hero.slides = enabledHeroSlides.map((item, index) => {

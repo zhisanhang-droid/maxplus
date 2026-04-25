@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import VideoEditorDialog from "../../components/media/VideoEditorDialog.vue";
-import TablePagination from "../../components/shared/TablePagination.vue";
-import { useTablePagination } from "../../composables/useTablePagination";
 import { useCatalogStore } from "../../stores/catalog";
 import type { VideoRecord } from "../../types/admin";
 
@@ -17,16 +15,6 @@ const visibleVideos = computed(() =>
     categoryFilter.value === "all" ? true : item.categoryId === categoryFilter.value
   )
 );
-const {
-  currentPage,
-  pageSize,
-  pageSizes,
-  total,
-  pagedItems,
-  resetPagination
-} = useTablePagination(visibleVideos);
-
-watch(categoryFilter, resetPagination);
 
 const openCreate = () => {
   currentRecord.value = null;
@@ -48,7 +36,7 @@ const saveVideo = async (record: VideoRecord) => {
 };
 
 const removeVideo = async (record: VideoRecord) => {
-  await ElMessageBox.confirm(`确认删除视频“${record.title}”吗？`, "提示", { type: "warning" });
+  await ElMessageBox.confirm(`确认删除视频"${record.title}"吗？`, "提示", { type: "warning" });
 
   try {
     await catalogStore.removeVideo(record.id);
@@ -83,44 +71,35 @@ const getCategoryLabel = (id: string) =>
       </div>
     </div>
 
-    <div class="table-scroll">
-      <el-table :data="pagedItems" stripe>
-        <el-table-column prop="title" label="视频标题" min-width="260" />
-        <el-table-column label="所属分类" width="160">
-          <template #default="{ row }">{{ getCategoryLabel(row.categoryId) }}</template>
-        </el-table-column>
-        <el-table-column prop="topic" label="主题" width="120" />
-        <el-table-column prop="duration" label="时长" width="100" />
-        <el-table-column label="视频外链" min-width="260" show-overflow-tooltip>
-          <template #default="{ row }">
-            <el-link v-if="row.videoUrl" :href="row.videoUrl" target="_blank" type="primary">
-              预览视频
-            </el-link>
-            <span v-else>未设置</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="状态" width="120">
-          <template #default="{ row }">
-            <el-tag :type="row.status === 'published' ? 'success' : 'warning'">
-              {{ row.status === "published" ? "已发布" : "草稿" }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="180" fixed="right">
-          <template #default="{ row }">
-            <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
-            <el-button link type="danger" @click="removeVideo(row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <TablePagination
-      v-model:current-page="currentPage"
-      v-model:page-size="pageSize"
-      :page-sizes="pageSizes"
-      :total="total"
-    />
+    <el-table :data="visibleVideos" stripe max-height="600">
+      <el-table-column prop="title" label="视频标题" min-width="260" />
+      <el-table-column label="所属分类" width="160">
+        <template #default="{ row }">{{ getCategoryLabel(row.categoryId) }}</template>
+      </el-table-column>
+      <el-table-column prop="topic" label="主题" width="120" />
+      <el-table-column prop="duration" label="时长" width="100" />
+      <el-table-column label="视频外链" min-width="260" show-overflow-tooltip>
+        <template #default="{ row }">
+          <el-link v-if="row.videoUrl" :href="row.videoUrl" target="_blank" type="primary">
+            预览视频
+          </el-link>
+          <span v-else>未设置</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" width="120">
+        <template #default="{ row }">
+          <el-tag :type="row.status === 'published' ? 'success' : 'warning'">
+            {{ row.status === "published" ? "已发布" : "草稿" }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="180" fixed="right">
+        <template #default="{ row }">
+          <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
+          <el-button link type="danger" @click="removeVideo(row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
     <VideoEditorDialog
       v-model="dialogVisible"

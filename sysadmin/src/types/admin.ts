@@ -25,6 +25,8 @@ export interface BrandSettings {
   defaultCurrency: string;
   timezone: string;
   address: string;
+  defaultBuyLabel: string;
+  defaultBuyUrl: string;
 }
 
 export interface SocialLink {

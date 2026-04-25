@@ -1,22 +1,18 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted } from "vue";
 import { useHeroSlider } from "../composables/useHeroSlider";
 import type { HeroContent } from "../types/content";
-import HeroOpeningScene from "./HeroOpeningScene.vue";
 
 const props = defineProps<{
   hero: HeroContent;
   holidayMode?: boolean;
 }>();
 
-const OPENING_SESSION_KEY = "maxplus-home-opening-v1";
-
 const slideTotal = computed(() => props.hero.slides.length);
 const isChristmasTheme = computed(() => Boolean(props.holidayMode));
 const { activeIndex, setSlide, startAutoplay, stopAutoplay } = useHeroSlider(
   () => slideTotal.value
 );
-const isOpeningActive = ref(shouldPlayOpening());
 
 const getSlideMediaStyle = (image: string, position?: string) => ({
   backgroundImage: `url(${image})`,
@@ -28,50 +24,11 @@ function handleMouseEnter() {
 }
 
 function handleMouseLeave() {
-  if (isOpeningActive.value) {
-    return;
-  }
-
   startAutoplay();
 }
-
-function shouldPlayOpening() {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  try {
-    return window.sessionStorage.getItem(OPENING_SESSION_KEY) !== "done";
-  } catch {
-    return false;
-  }
-}
-
-function finishOpening() {
-  if (typeof window !== "undefined") {
-    try {
-      window.sessionStorage.setItem(OPENING_SESSION_KEY, "done");
-    } catch {
-      // Ignore storage failures and allow the hero to continue rendering.
-    }
-  }
-
-  isOpeningActive.value = false;
-}
-
-watch(isOpeningActive, (opening) => {
-  if (opening) {
-    stopAutoplay();
-    return;
-  }
-
-  startAutoplay();
-});
 
 onMounted(() => {
-  if (isOpeningActive.value) {
-    stopAutoplay();
-  }
+  startAutoplay();
 });
 </script>
 
@@ -81,17 +38,12 @@ onMounted(() => {
       :class="[
         'hero-slider',
         {
-          'hero-slider--opening': isOpeningActive,
           'hero-slider--christmas': isChristmasTheme
         }
       ]"
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
     >
-      <Transition name="hero-opening-layer">
-        <HeroOpeningScene v-if="isOpeningActive" class="hero-slider__opening" @complete="finishOpening" />
-      </Transition>
-
       <article
         v-for="(slide, index) in hero.slides"
         :key="slide.title"

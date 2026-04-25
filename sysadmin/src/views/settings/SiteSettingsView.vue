@@ -91,6 +91,24 @@ const save = async () => {
         <el-form-item label="联系地址">
           <el-input v-model="settingsStore.siteSettings.brand.address" />
         </el-form-item>
+
+        <el-divider />
+
+        <div class="editor-grid editor-grid--2">
+          <el-form-item label="购买按钮文案（全局默认）">
+            <el-input
+              v-model="settingsStore.siteSettings.brand.defaultBuyLabel"
+              placeholder="如：Buy on Amazon"
+            />
+          </el-form-item>
+          <el-form-item label="购买跳转链接（全局默认）">
+            <el-input
+              v-model="settingsStore.siteSettings.brand.defaultBuyUrl"
+              placeholder="如：https://www.amazon.com/stores/..."
+            />
+            <div class="editor-hint">填写后，顶部导航按钮及未单独配置链接的商品均跳转至此地址。若留空，则保持跳转到站内询盘页。</div>
+          </el-form-item>
+        </div>
       </el-form>
     </section>
 

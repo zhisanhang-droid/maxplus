@@ -81,8 +81,7 @@ usePageMeta({
           v-for="item in filteredVideos"
           :key="item.slug"
           :to="getVideoLink(item.slug)"
-          class="video-card reveal"
-          v-reveal
+          class="video-card"
         >
           <div
             v-if="item.coverImage"

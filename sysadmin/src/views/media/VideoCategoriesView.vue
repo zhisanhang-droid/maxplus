@@ -2,8 +2,6 @@
 import { computed, ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import VideoCategoryEditorDialog from "../../components/media/VideoCategoryEditorDialog.vue";
-import TablePagination from "../../components/shared/TablePagination.vue";
-import { useTablePagination } from "../../composables/useTablePagination";
 import { useCatalogStore } from "../../stores/catalog";
 import type { VideoCategoryRecord } from "../../types/admin";
 
@@ -79,7 +77,6 @@ const categoryTree = computed<VideoCategoryTreeRow[]>(() => {
 
   return sortRows(roots);
 });
-const { currentPage, pageSize, pageSizes, total, pagedItems, resetPagination } = useTablePagination(categoryTree);
 
 const openCreate = () => {
   currentRecord.value = null;
@@ -94,7 +91,6 @@ const openEdit = (record: VideoCategoryRecord) => {
 const saveCategory = async (record: VideoCategoryRecord) => {
   try {
     await catalogStore.saveVideoCategory(record);
-    resetPagination();
     dialogVisible.value = false;
     currentRecord.value = null;
     ElMessage.success("视频分类已保存。");
@@ -104,7 +100,7 @@ const saveCategory = async (record: VideoCategoryRecord) => {
 };
 
 const removeCategory = async (record: VideoCategoryRecord) => {
-  await ElMessageBox.confirm(`确认删除视频分类“${record.name}”吗？`, "提示", { type: "warning" });
+  await ElMessageBox.confirm(`确认删除视频分类"${record.name}"吗？`, "提示", { type: "warning" });
 
   try {
     await catalogStore.removeVideoCategory(record.id);
@@ -124,41 +120,33 @@ const removeCategory = async (record: VideoCategoryRecord) => {
       <el-button type="primary" @click="openCreate">新增视频分类</el-button>
     </div>
 
-    <div class="table-scroll">
-      <el-table
-        :data="pagedItems"
-        stripe
-        row-key="id"
-        :default-expand-all="true"
-        :tree-props="{ children: 'children' }"
-      >
-        <el-table-column prop="name" label="分类名称" min-width="220" />
-        <el-table-column prop="slug" label="Slug" min-width="180" />
-        <el-table-column prop="parent" label="上级分类" width="140" />
-        <el-table-column prop="sortOrder" label="排序" width="90" />
-        <el-table-column prop="videoCount" label="关联视频" width="100" />
-        <el-table-column label="启用状态" width="120">
-          <template #default="{ row }">
-            <el-tag :type="row.enabled ? 'success' : 'info'">
-              {{ row.enabled ? "启用" : "隐藏" }}
-            </el-tag>
-          </template>
-        </el-table-column>
-        <el-table-column label="操作" width="180" fixed="right">
-          <template #default="{ row }">
-            <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
-            <el-button link type="danger" @click="removeCategory(row)">删除</el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-
-    <TablePagination
-      v-model:current-page="currentPage"
-      v-model:page-size="pageSize"
-      :page-sizes="pageSizes"
-      :total="total"
-    />
+    <el-table
+      :data="categoryTree"
+      stripe
+      row-key="id"
+      :default-expand-all="true"
+      :tree-props="{ children: 'children' }"
+      max-height="600"
+    >
+      <el-table-column prop="name" label="分类名称" min-width="220" />
+      <el-table-column prop="slug" label="Slug" min-width="180" />
+      <el-table-column prop="parent" label="上级分类" width="140" />
+      <el-table-column prop="sortOrder" label="排序" width="90" />
+      <el-table-column prop="videoCount" label="关联视频" width="100" />
+      <el-table-column label="启用状态" width="120">
+        <template #default="{ row }">
+          <el-tag :type="row.enabled ? 'success' : 'info'">
+            {{ row.enabled ? "启用" : "隐藏" }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column label="操作" width="180" fixed="right">
+        <template #default="{ row }">
+          <el-button link type="primary" @click="openEdit(row)">编辑</el-button>
+          <el-button link type="danger" @click="removeCategory(row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
 
     <VideoCategoryEditorDialog
       v-model="dialogVisible"

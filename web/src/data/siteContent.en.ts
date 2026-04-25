@@ -24,6 +24,7 @@ export const siteContent: SiteContent = {
     logoSub: "Sporting Goods",
     toggleLabel: "Menu",
     ctaLabel: "Go To Buy",
+    ctaHref: "/buy",
     links: [
       { href: "/", label: "Home" },
       { href: "/brand-story", label: "Brand Story" },

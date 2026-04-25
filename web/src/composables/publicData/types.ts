@@ -19,6 +19,8 @@ export interface RawSiteSettings {
     salesEmail: string;
     phone: string;
     defaultLanguage: string;
+    defaultBuyLabel?: string;
+    defaultBuyUrl?: string;
   };
   socials: RawSocialLink[];
   theme?: RawSiteTheme;

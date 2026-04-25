@@ -28,7 +28,9 @@ const seedSiteSettings = {
     defaultLanguage: "English",
     defaultCurrency: "USD",
     timezone: "America/Los_Angeles",
-    address: "Los Angeles, California, United States"
+    address: "Los Angeles, California, United States",
+    defaultBuyLabel: "Go To Buy",
+    defaultBuyUrl: ""
   },
   socials: [
     { name: "Instagram", url: "https://instagram.com/maxplus" },

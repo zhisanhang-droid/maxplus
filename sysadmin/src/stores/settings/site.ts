@@ -80,7 +80,9 @@ export function createDefaultSiteSettings(): SiteSettingsState {
       defaultLanguage: "",
       defaultCurrency: "",
       timezone: "",
-      address: ""
+      address: "",
+      defaultBuyLabel: "Go To Buy",
+      defaultBuyUrl: ""
     },
     socials: [],
     notifications: {

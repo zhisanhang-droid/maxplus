@@ -11,6 +11,10 @@ const props = defineProps<{
 const isMenuOpen = ref(false);
 const route = useRoute();
 const header = computed(() => props.header);
+const isExternalCta = computed(() => {
+  const href = props.header.ctaHref || "/buy";
+  return href.startsWith("http://") || href.startsWith("https://");
+});
 const holidayMessage = "Christmas Exclusive: Gift-ready picks and festive holiday offers.";
 const showHolidayBar = computed(() => Boolean(props.holidayMode) && route.path === "/");
 
@@ -56,7 +60,16 @@ const closeMenu = (): void => {
         </RouterLink>
       </div>
 
-      <RouterLink class="button button--primary nav__cta" to="/buy">
+      <a
+        v-if="isExternalCta"
+        class="button button--primary nav__cta"
+        :href="header.ctaHref"
+        target="_blank"
+        rel="noreferrer"
+      >
+        {{ header.ctaLabel }}
+      </a>
+      <RouterLink v-else class="button button--primary nav__cta" :to="header.ctaHref || '/buy'">
         {{ header.ctaLabel }}
       </RouterLink>
     </nav>

@@ -11,6 +11,7 @@ export interface HeaderContent {
   logoSub: string;
   toggleLabel: string;
   ctaLabel: string;
+  ctaHref: string;
   links: NavLink[];
 }
 

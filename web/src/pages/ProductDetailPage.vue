@@ -16,7 +16,7 @@ type ProductMediaItem = {
 };
 
 const route = useRoute();
-const { findProductBySlug, getRelatedProducts, loadPublicData, loading } = usePublicData();
+const { findProductBySlug, getRelatedProducts, loadPublicData, loading, siteSettings } = usePublicData();
 
 const normalizeRouteSlug = (value: unknown) => {
   const source = Array.isArray(value) ? value[0] : value;
@@ -51,7 +51,20 @@ const productReferencePrice = computed(() => {
 const productCategoryLabel = computed(() => product.value?.categoryLabel?.trim() || "");
 const productCategorySlug = computed(() => product.value?.categorySlug?.trim() || "");
 const hasCategoryLink = computed(() => Boolean(productCategoryLabel.value && productCategorySlug.value));
-const isInternalBuyLink = computed(() => (product.value?.buyButtonUrl || "/buy").startsWith("/"));
+const globalBuyUrl = computed(() => siteSettings.value?.brand?.defaultBuyUrl?.trim() || "");
+const globalBuyLabel = computed(() => siteSettings.value?.brand?.defaultBuyLabel?.trim() || "");
+
+const effectiveBuyUrl = computed(() => {
+  const url = product.value?.buyButtonUrl?.trim();
+  if (url && url !== "/buy") return url;
+  return globalBuyUrl.value || "/buy";
+});
+const effectiveBuyLabel = computed(() => {
+  const label = product.value?.buyButtonLabel?.trim();
+  if (label && label !== "Go To Buy") return label;
+  return globalBuyLabel.value || label || "Go To Buy";
+});
+const isInternalBuyLink = computed(() => !effectiveBuyUrl.value.startsWith("http"));
 
 const getMediaStyle = (imageUrl: string) => ({
   backgroundImage: `url(${imageUrl})`
@@ -106,14 +119,12 @@ const buildMediaItems = (currentProduct: CatalogProduct | undefined): ProductMed
 
 const mediaItems = computed(() => buildMediaItems(product.value));
 const activeMediaKey = ref("");
-const thumbnailStartIndex = ref(0);
 const heroRef = ref<HTMLElement | null>(null);
 const isZoomVisible = ref(false);
 const zoomX = ref(50);
 const zoomY = ref(50);
 const zoomLeft = ref(0);
 const zoomTop = ref(0);
-const thumbnailWindowSize = 4;
 const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
 
 const activeMedia = computed(
@@ -122,20 +133,8 @@ const activeMedia = computed(
 const activeMediaIndex = computed(() =>
   mediaItems.value.findIndex((item) => item.key === activeMediaKey.value)
 );
-const visibleMediaItems = computed(() => {
-  if (mediaItems.value.length <= thumbnailWindowSize) {
-    return mediaItems.value;
-  }
-
-  return mediaItems.value.slice(
-    thumbnailStartIndex.value,
-    thumbnailStartIndex.value + thumbnailWindowSize
-  );
-});
-const canScrollPreviousMedia = computed(() => thumbnailStartIndex.value > 0);
-const canScrollNextMedia = computed(
-  () => thumbnailStartIndex.value + thumbnailWindowSize < mediaItems.value.length
-);
+const canGoPrev = computed(() => activeMediaIndex.value > 0);
+const canGoNext = computed(() => activeMediaIndex.value < mediaItems.value.length - 1);
 const zoomFrameSize = 132;
 
 const hideZoom = () => {
@@ -159,7 +158,6 @@ watch(
   (items) => {
     if (!items.length) {
       activeMediaKey.value = "";
-      thumbnailStartIndex.value = 0;
       hideZoom();
       return;
     }
@@ -168,27 +166,10 @@ watch(
       activeMediaKey.value = items[0].key;
     }
 
-    const maxStartIndex = Math.max(0, items.length - thumbnailWindowSize);
-    thumbnailStartIndex.value = clamp(thumbnailStartIndex.value, 0, maxStartIndex);
     hideZoom();
   },
   { immediate: true }
 );
-
-watch(activeMediaIndex, (index) => {
-  if (index < 0) {
-    return;
-  }
-
-  if (index < thumbnailStartIndex.value) {
-    thumbnailStartIndex.value = index;
-    return;
-  }
-
-  if (index >= thumbnailStartIndex.value + thumbnailWindowSize) {
-    thumbnailStartIndex.value = index - thumbnailWindowSize + 1;
-  }
-});
 
 const supportsHoverZoom = () =>
   typeof window !== "undefined" && window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -198,15 +179,20 @@ const selectMedia = (key: string) => {
   hideZoom();
 };
 
-const scrollThumbnailWindow = (step: number) => {
-  const maxStartIndex = Math.max(0, mediaItems.value.length - thumbnailWindowSize);
-  const nextStartIndex = clamp(thumbnailStartIndex.value + step, 0, maxStartIndex);
-
-  if (nextStartIndex === thumbnailStartIndex.value) {
-    return;
+const selectPrevMedia = () => {
+  const index = activeMediaIndex.value;
+  if (index > 0) {
+    activeMediaKey.value = mediaItems.value[index - 1].key;
+    hideZoom();
   }
+};
 
-  thumbnailStartIndex.value = nextStartIndex;
+const selectNextMedia = () => {
+  const index = activeMediaIndex.value;
+  if (index < mediaItems.value.length - 1) {
+    activeMediaKey.value = mediaItems.value[index + 1].key;
+    hideZoom();
+  }
 };
 
 const handleHeroMouseMove = (event: MouseEvent) => {
@@ -316,45 +302,31 @@ useStructuredData(
             :style="zoomPreviewStyle"
           ></div>
 
-          <div v-if="mediaItems.length > 1" class="product-detail__gallery">
-            <button
-              type="button"
-              class="product-detail__gallery-nav"
-              :disabled="!canScrollPreviousMedia"
-              aria-label="Scroll previous thumbnails"
-              @click="scrollThumbnailWindow(-1)"
-            >
-              ‹
-            </button>
-
-            <div class="product-detail__gallery-track">
-              <button
-                v-for="item in visibleMediaItems"
-                :key="item.key"
-                type="button"
-                class="catalog-gallery__item product-detail__thumb"
-                :class="[
-                  item.kind === 'image' ? 'catalog-gallery__item--photo' : item.value,
-                  { 'product-detail__thumb--active': item.key === activeMediaKey }
-                ]"
-                :style="item.kind === 'image' ? getMediaStyle(item.value) : undefined"
-                :aria-label="item.label"
-                :aria-pressed="item.key === activeMediaKey"
-                @click="selectMedia(item.key)"
-              >
-                <span class="sr-only">{{ item.label }}</span>
-              </button>
-            </div>
-
-            <button
-              type="button"
-              class="product-detail__gallery-nav"
-              :disabled="!canScrollNextMedia"
-              aria-label="Scroll next thumbnails"
-              @click="scrollThumbnailWindow(1)"
-            >
-              ›
-            </button>
+          <button
+            v-if="mediaItems.length > 1 && canGoPrev"
+            type="button"
+            class="product-detail__arrow product-detail__arrow--prev"
+            aria-label="Previous image"
+            @click="selectPrevMedia"
+          >
+            ‹
+          </button>
+          <button
+            v-if="mediaItems.length > 1 && canGoNext"
+            type="button"
+            class="product-detail__arrow product-detail__arrow--next"
+            aria-label="Next image"
+            @click="selectNextMedia"
+          >
+            ›
+          </button>
+          <div v-if="mediaItems.length > 1" class="product-detail__dots" aria-hidden="true">
+            <span
+              v-for="item in mediaItems"
+              :key="item.key"
+              class="product-detail__dot"
+              :class="{ 'product-detail__dot--active': item.key === activeMediaKey }"
+            ></span>
           </div>
         </div>
 
@@ -375,18 +347,18 @@ useStructuredData(
             <RouterLink
               v-if="isInternalBuyLink"
               class="button button--primary"
-              :to="product.buyButtonUrl || '/buy'"
+              :to="effectiveBuyUrl"
             >
-              {{ product.buyButtonLabel || "Go To Buy" }}
+              {{ effectiveBuyLabel }}
             </RouterLink>
             <a
               v-else
               class="button button--primary"
-              :href="product.buyButtonUrl || '/buy'"
+              :href="effectiveBuyUrl"
               target="_blank"
               rel="noreferrer"
             >
-              {{ product.buyButtonLabel || "Go To Buy" }}
+              {{ effectiveBuyLabel }}
             </a>
           </div>
         </div>

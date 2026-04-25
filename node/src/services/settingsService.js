@@ -205,7 +205,15 @@ async function saveSiteSettings(payload) {
         defaultValue: current.brand.defaultCurrency
       }),
       timezone: sanitizeString(brandInput.timezone, { max: 80, defaultValue: current.brand.timezone }),
-      address: sanitizeText(brandInput.address, { max: 300, defaultValue: current.brand.address })
+      address: sanitizeText(brandInput.address, { max: 300, defaultValue: current.brand.address }),
+      defaultBuyLabel: sanitizeString(brandInput.defaultBuyLabel, {
+        max: 80,
+        defaultValue: current.brand.defaultBuyLabel || "Go To Buy"
+      }),
+      defaultBuyUrl: sanitizeString(brandInput.defaultBuyUrl, {
+        max: 500,
+        defaultValue: current.brand.defaultBuyUrl || ""
+      })
     },
     socials: socialsInput.slice(0, 8).map((item, index) => ({
       id: ensureId(item.id, `social-${index + 1}`),

@@ -311,7 +311,8 @@
 }
 
 .product-detail__gallery .catalog-gallery__item--photo {
-  background-size: 74%;
+  background-size: contain;
+  background-position: center;
   background-color: rgba(245, 248, 252, 0.92);
 }
 

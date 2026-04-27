@@ -2,11 +2,15 @@
 import { computed, ref, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import TablePagination from "../../components/shared/TablePagination.vue";
+import ImageUploader from "../../components/shared/ImageUploader.vue";
 import { useTablePagination } from "../../composables/useTablePagination";
 import { useSettingsStore } from "../../stores/settings";
+import { useSessionStore } from "../../stores/session";
 import type { HeroSlideItem } from "../../types/admin";
 
 const settingsStore = useSettingsStore();
+const sessionStore = useSessionStore();
+const token = computed(() => sessionStore.token);
 
 const search = ref("");
 const dialogVisible = ref(false);
@@ -231,7 +235,10 @@ const removeHeroSlide = async (item: HeroSlideItem) => {
           <el-input v-model="draft.secondaryTargetUrl" placeholder="次按钮跳转链接，可留空" />
           <el-input v-model="draft.secondaryLabel" placeholder="次按钮文案，可留空" />
         </div>
-        <el-input v-model="draft.imageUrl" placeholder="轮播图片地址，如 /images/hero-training.svg" />
+        <div>
+          <div style="font-size:13px;color:#606266;margin-bottom:6px;">轮播背景图片</div>
+          <ImageUploader v-model="draft.imageUrl" :token="token" />
+        </div>
 
         <div class="inline-row">
           <el-switch v-model="draft.enabled" />

@@ -92,7 +92,7 @@ const filteredProducts = computed(() => {
       sorted.sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
       break;
     default:
-      sorted.sort((a, b) => a.title.localeCompare(b.title));
+      sorted.sort((a, b) => Number(Boolean(b.featured)) - Number(Boolean(a.featured)));
       break;
   }
 

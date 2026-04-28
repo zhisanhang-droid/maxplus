@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import ExternalVideoPlayer from "../components/ExternalVideoPlayer.vue";
 import PageBanner from "../components/PageBanner.vue";
@@ -9,11 +9,21 @@ import { useStructuredData } from "../composables/useStructuredData";
 import { resolveVideoSource } from "../utils/video";
 
 const route = useRoute();
-const { findVideoCategoryBySlug, findVideoBySlug, getRelatedVideos } = usePublicData();
+const { findVideoCategoryBySlug, findVideoBySlug, getRelatedVideos, loadPublicData, loading } = usePublicData();
 
-const video = computed(() => findVideoBySlug(String(route.params.slug ?? "")));
+const routeSlug = computed(() => String(route.params.slug ?? ""));
+const video = computed(() => findVideoBySlug(routeSlug.value));
 const relatedVideos = computed(() =>
   video.value ? getRelatedVideos(video.value) : []
+);
+
+watch(
+  routeSlug,
+  (slug) => {
+    if (!slug || video.value || loading.value) return;
+    void loadPublicData();
+  },
+  { immediate: true }
 );
 
 const getCategoryLabel = (slug: string) =>

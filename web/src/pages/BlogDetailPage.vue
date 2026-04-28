@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import { usePageMeta } from "../composables/usePageMeta";
 import { usePublicData } from "../composables/usePublicData";
@@ -12,10 +12,20 @@ interface ArticleHeading {
 }
 
 const route = useRoute();
-const { findBlogBySlug, getRelatedBlogs, blogPage, seoSettings } = usePublicData();
+const { findBlogBySlug, getRelatedBlogs, blogPage, seoSettings, loadPublicData, loading } = usePublicData();
 
-const post = computed(() => findBlogBySlug(String(route.params.slug ?? "")));
+const routeSlug = computed(() => String(route.params.slug ?? ""));
+const post = computed(() => findBlogBySlug(routeSlug.value));
 const relatedPosts = computed(() => (post.value ? getRelatedBlogs(post.value) : []));
+
+watch(
+  routeSlug,
+  (slug) => {
+    if (!slug || post.value || loading.value) return;
+    void loadPublicData();
+  },
+  { immediate: true }
+);
 
 const formattedPublishDate = computed(() => {
   if (!post.value?.publishDate) {

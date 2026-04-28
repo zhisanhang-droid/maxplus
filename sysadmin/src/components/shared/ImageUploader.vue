@@ -1,10 +1,23 @@
 <template>
   <div class="image-uploader">
+    <input
+      ref="inputRef"
+      type="file"
+      accept="image/jpeg,image/png,image/webp,image/gif"
+      style="display:none"
+      @change="handleFileChange"
+    />
+
     <div v-if="modelValue" class="image-uploader__preview">
       <img :src="modelValue" alt="preview" class="image-uploader__img" />
-      <el-button size="small" type="danger" plain style="width:100%;margin-top:6px" @click="emit('update:modelValue', '')">
-        删除
-      </el-button>
+      <div class="image-uploader__preview-actions">
+        <el-button size="small" plain :loading="uploading" @click="triggerInput">
+          替换图片
+        </el-button>
+        <el-button size="small" type="danger" plain :disabled="uploading" @click="emit('update:modelValue', '')">
+          删除
+        </el-button>
+      </div>
     </div>
 
     <div v-else class="image-uploader__trigger" :class="{ 'is-uploading': uploading }" @click="triggerInput">
@@ -12,13 +25,6 @@
       <el-icon v-else class="is-loading" style="font-size:24px;color:#409eff"><Loading /></el-icon>
       <span style="font-size:13px;color:#909399">{{ uploading ? '上传中...' : '点击上传图片' }}</span>
       <span style="font-size:11px;color:#c0c4cc">JPG / PNG / WebP，最大 5MB</span>
-      <input
-        ref="inputRef"
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif"
-        style="display:none"
-        @change="handleFileChange"
-      />
     </div>
   </div>
 </template>
@@ -98,6 +104,11 @@ async function handleFileChange(event: Event) {
 .image-uploader__preview {
   display: inline-flex;
   flex-direction: column;
+}
+.image-uploader__preview-actions {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
 }
 .image-uploader__img {
   width: 160px;

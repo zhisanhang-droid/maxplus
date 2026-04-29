@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { reactive, ref, watch } from "vue";
 import type { CategoryRecord } from "../../types/admin";
+import ImageUploader from "../shared/ImageUploader.vue";
+import { useSessionStore } from "../../stores/session";
 
 const props = defineProps<{
   modelValue: boolean;
@@ -38,12 +40,14 @@ const createDraft = (): CategoryRecord => ({
     sortBestSellingLabel: "Best Selling"
   },
   visualClass: "",
+  visualImage: "",
   highlights: [],
   stats: []
 });
 
+const sessionStore = useSessionStore();
 const draft = reactive<CategoryRecord>(createDraft());
-const maxHighlights = 5;
+const maxHighlights = 10;
 const statsText = ref("");
 
 const formatStats = (stats: CategoryRecord["stats"] = []) =>
@@ -148,6 +152,10 @@ const submit = () => {
 
       <el-form-item label="Banner 说明">
         <el-input v-model="draft.bannerText" type="textarea" :rows="3" />
+      </el-form-item>
+
+      <el-form-item label="分类展示图片（上传后替代视觉类名效果）">
+        <ImageUploader v-model="draft.visualImage!" :token="sessionStore.token" />
       </el-form-item>
 
       <div class="editor-block">

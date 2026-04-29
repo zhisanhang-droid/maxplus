@@ -148,7 +148,9 @@ usePageMeta(
         </div>
 
         <div class="catalog-hero__aside reveal" v-reveal>
-          <div :class="['catalog-hero__visual', category.visualClass]"></div>
+          <div :class="['catalog-hero__visual', category.visualImage ? '' : category.visualClass]">
+            <img v-if="category.visualImage" :src="category.visualImage" alt="" class="catalog-hero__visual-img" />
+          </div>
 
           <div class="catalog-hero__stats">
             <article v-for="item in category.stats" :key="item.label">
@@ -237,3 +239,13 @@ usePageMeta(
     </div>
   </section>
 </template>
+
+<style scoped>
+.catalog-hero__visual-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+}
+</style>

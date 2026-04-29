@@ -191,6 +191,7 @@ export interface RawCategory {
   bannerText?: string;
   filterConfig?: Partial<CatalogCategory["filterConfig"]>;
   visualClass?: string;
+  visualImage?: string;
   highlights?: string[];
   stats?: Array<{ value: string; label: string }>;
 }

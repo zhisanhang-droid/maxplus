@@ -42,6 +42,7 @@ export function buildMappedCategories(rawCategories: RawCategory[]): CatalogCate
           rawFilterConfig.sortBestSellingLabel?.trim() || defaults.sortBestSellingLabel
       },
       visualClass: item.visualClass || "catalog-hero__visual--team",
+      visualImage: item.visualImage || "",
       highlights: item.highlights?.length ? item.highlights : [item.summary],
       stats: item.stats?.length ? item.stats : [{ value: "Live", label: "category" }]
     };

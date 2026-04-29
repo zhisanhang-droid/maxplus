@@ -181,6 +181,7 @@ function mapCategory(row) {
       safeParseJson(row.filter_config_json, buildDefaultCategoryFilterConfig())
     ),
     visualClass: row.visual_class,
+    visualImage: row.visual_image || "",
     highlights: safeParseJson(row.highlights_json, []),
     stats: safeParseJson(row.stats_json, [])
   };
@@ -563,6 +564,7 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
       max: 120,
       defaultValue: current?.visualClass || inferCategoryVisual(slug)
     }),
+    visualImage: sanitizeString(input.visualImage, { max: 500, defaultValue: current?.visualImage || "" }),
     highlights: normalizeCategoryHighlights(
       input.highlights ?? current?.highlights ?? [input.name, "Catalog", "Wholesale"],
     ),
@@ -579,7 +581,7 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
     if (includeFilterConfig) {
       await query(
         `UPDATE ${tableName}
-         SET name = ?, slug = ?, parent_label = ?, sort_order = ?, enabled = ?, seo_title = ?, eyebrow = ?, summary = ?, banner_title = ?, banner_text = ?, filter_config_json = ?, visual_class = ?, highlights_json = ?, stats_json = ?
+         SET name = ?, slug = ?, parent_label = ?, sort_order = ?, enabled = ?, seo_title = ?, eyebrow = ?, summary = ?, banner_title = ?, banner_text = ?, filter_config_json = ?, visual_class = ?, visual_image = ?, highlights_json = ?, stats_json = ?
          WHERE id = ?`,
         [
           payload.name,
@@ -594,6 +596,7 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
           payload.bannerText,
           stringifyJson(payload.filterConfig),
           payload.visualClass,
+          payload.visualImage || null,
           stringifyJson(payload.highlights),
           stringifyJson(payload.stats),
           payload.id
@@ -604,7 +607,7 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
 
     await query(
       `UPDATE ${tableName}
-       SET name = ?, slug = ?, parent_label = ?, sort_order = ?, enabled = ?, seo_title = ?, eyebrow = ?, summary = ?, banner_title = ?, banner_text = ?, visual_class = ?, highlights_json = ?, stats_json = ?
+       SET name = ?, slug = ?, parent_label = ?, sort_order = ?, enabled = ?, seo_title = ?, eyebrow = ?, summary = ?, banner_title = ?, banner_text = ?, visual_class = ?, visual_image = ?, highlights_json = ?, stats_json = ?
        WHERE id = ?`,
       [
         payload.name,
@@ -618,6 +621,7 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
         payload.bannerTitle,
         payload.bannerText,
         payload.visualClass,
+        payload.visualImage || null,
         stringifyJson(payload.highlights),
         stringifyJson(payload.stats),
         payload.id
@@ -627,8 +631,8 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
     if (includeFilterConfig) {
       await query(
         `INSERT INTO ${tableName} (
-           id, name, slug, parent_label, sort_order, enabled, seo_title, eyebrow, summary, banner_title, banner_text, filter_config_json, visual_class, highlights_json, stats_json
-         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+           id, name, slug, parent_label, sort_order, enabled, seo_title, eyebrow, summary, banner_title, banner_text, filter_config_json, visual_class, visual_image, highlights_json, stats_json
+         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           payload.id,
           payload.name,
@@ -643,6 +647,7 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
           payload.bannerText,
           stringifyJson(payload.filterConfig),
           payload.visualClass,
+          payload.visualImage || null,
           stringifyJson(payload.highlights),
           stringifyJson(payload.stats)
         ]
@@ -652,8 +657,8 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
 
     await query(
       `INSERT INTO ${tableName} (
-         id, name, slug, parent_label, sort_order, enabled, seo_title, eyebrow, summary, banner_title, banner_text, visual_class, highlights_json, stats_json
-       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+         id, name, slug, parent_label, sort_order, enabled, seo_title, eyebrow, summary, banner_title, banner_text, visual_class, visual_image, highlights_json, stats_json
+       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         payload.id,
         payload.name,
@@ -667,6 +672,7 @@ async function saveManagedCategory(tableName, input, getCurrent, idPrefix = "cat
         payload.bannerTitle,
         payload.bannerText,
         payload.visualClass,
+        payload.visualImage || null,
         stringifyJson(payload.highlights),
         stringifyJson(payload.stats)
       ]

@@ -121,7 +121,7 @@ function normalizeCategoryHighlights(value) {
   return value
     .map((item) => sanitizeText(item, { max: 5000 }))
     .filter(Boolean)
-    .slice(0, 5);
+    .slice(0, 10);
 }
 
 function buildSafeSlug(value, fallbackSlug = "", defaultSlug = "") {

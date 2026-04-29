@@ -26,6 +26,7 @@ export interface CatalogCategory {
   bannerText: string;
   filterConfig: CategoryFilterConfig;
   visualClass: string;
+  visualImage?: string;
   highlights: string[];
   stats: CategoryStat[];
 }

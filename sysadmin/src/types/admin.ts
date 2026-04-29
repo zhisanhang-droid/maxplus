@@ -316,6 +316,7 @@ export interface CategoryRecord {
   bannerText?: string;
   filterConfig?: CategoryFilterConfigRecord;
   visualClass?: string;
+  visualImage?: string;
   highlights?: string[];
   stats?: CategoryStatRecord[];
 }

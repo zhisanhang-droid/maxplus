@@ -138,29 +138,6 @@ usePageMeta(
 
   <section class="section category-detail">
     <div class="shell" v-if="category">
-      <div class="catalog-hero">
-        <div class="catalog-hero__copy reveal" v-reveal>
-          <p>{{ category.bannerText }}</p>
-
-          <ul class="catalog-hero__highlights">
-            <li v-for="item in category.highlights" :key="item">{{ item }}</li>
-          </ul>
-        </div>
-
-        <div class="catalog-hero__aside reveal" v-reveal>
-          <div :class="['catalog-hero__visual', category.visualImage ? '' : category.visualClass]">
-            <img v-if="category.visualImage" :src="category.visualImage" alt="" class="catalog-hero__visual-img" />
-          </div>
-
-          <div class="catalog-hero__stats">
-            <article v-for="item in category.stats" :key="item.label">
-              <strong>{{ item.value }}</strong>
-              <span>{{ item.label }}</span>
-            </article>
-          </div>
-        </div>
-      </div>
-
       <div class="catalog-filter-card reveal" v-reveal>
         <div class="catalog-filter-card__grid">
           <label>

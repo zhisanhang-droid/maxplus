@@ -79,19 +79,6 @@ usePageMeta({
         </RouterLink>
       </div>
 
-      <div class="category-strip">
-        <RouterLink
-          v-for="category in catalogCategories"
-          :key="category.slug"
-          :to="`/categories/${category.slug}`"
-          class="category-strip__card reveal"
-          v-reveal
-        >
-          <strong>{{ category.title }}</strong>
-          <span>{{ category.summary }}</span>
-        </RouterLink>
-      </div>
-
       <CatalogProductGrid :products="visibleProducts" variant="compact" />
     </div>
   </section>

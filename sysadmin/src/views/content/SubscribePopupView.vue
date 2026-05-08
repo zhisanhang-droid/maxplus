@@ -346,8 +346,9 @@ const removeField = async (field: HomeContactFormFieldState) => {
           <p>上传自定义图片替换默认礼盒动画（圆形显示，支持排球等图片）；留空则保持礼盒样式。可调整按钮在页面上的默认透明度，鼠标悬停时自动恢复全显。</p>
         </div>
 
-        <div class="editor-grid editor-grid--2">
-          <el-form-item label="按钮图片">
+        <div class="button-appearance-grid">
+          <div class="button-appearance-card">
+            <span class="button-appearance-label">按钮图片</span>
             <div class="button-image-upload-row">
               <el-input
                 v-model="settingsStore.subscribePopup.buttonImage"
@@ -366,18 +367,17 @@ const removeField = async (field: HomeContactFormFieldState) => {
             <div v-if="settingsStore.subscribePopup.buttonImage" class="button-image-preview">
               <img :src="settingsStore.subscribePopup.buttonImage" alt="按钮图片预览" />
             </div>
-          </el-form-item>
-          <el-form-item label="默认透明度">
-            <div class="opacity-control">
-              <el-slider
-                v-model="settingsStore.subscribePopup.buttonOpacity"
-                :min="0.1"
-                :max="1"
-                :step="0.01"
-              />
-              <span class="opacity-value">{{ Math.round(settingsStore.subscribePopup.buttonOpacity * 100) }}%</span>
-            </div>
-          </el-form-item>
+          </div>
+          <div class="button-appearance-card">
+            <span class="button-appearance-label">默认透明度：{{ Math.round(settingsStore.subscribePopup.buttonOpacity * 100) }}%</span>
+            <el-slider
+              v-model="settingsStore.subscribePopup.buttonOpacity"
+              :min="0.1"
+              :max="1"
+              :step="0.01"
+            />
+            <p class="button-appearance-hint">鼠标悬停或弹窗打开时自动恢复全显</p>
+          </div>
         </div>
 
         <div class="editor-grid editor-grid--2">
@@ -641,18 +641,41 @@ const removeField = async (field: HomeContactFormFieldState) => {
   align-items: center;
 }
 
+.button-appearance-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.button-appearance-card {
+  display: grid;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(16, 33, 58, 0.08);
+  background: var(--admin-surface-soft);
+}
+
+.button-appearance-label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--admin-navy);
+}
+
+.button-appearance-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--admin-text-soft);
+}
+
 .button-image-upload-row {
   display: flex;
   gap: 0.5rem;
-  width: 100%;
 }
 
 .button-image-upload-row .el-input {
   flex: 1;
-}
-
-.button-image-preview {
-  margin-top: 0.65rem;
 }
 
 .button-image-preview img {
@@ -663,23 +686,10 @@ const removeField = async (field: HomeContactFormFieldState) => {
   border: 2px solid rgba(16, 33, 58, 0.1);
 }
 
-.opacity-control {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-}
-
-.opacity-control .el-slider {
-  flex: 1;
-}
-
-.opacity-value {
-  flex: 0 0 3.2rem;
-  text-align: right;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--admin-navy);
+@media (max-width: 760px) {
+  .button-appearance-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .contact-summary-grid {

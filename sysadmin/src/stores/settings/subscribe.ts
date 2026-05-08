@@ -25,6 +25,8 @@ export function createDefaultSubscribePopup(): SubscribePopupState {
   return {
     enabled: true,
     stylePreset: "classic-gift",
+    buttonImage: "",
+    buttonOpacity: 0.72,
     toggleLabel: "Subscribe For Perks",
     eyebrow: "Member Benefits",
     title: "Subscribe with your email and order number.",
@@ -87,6 +89,10 @@ export function normalizeSubscribePopup(
     stylePreset: subscribeStylePresets.has(source.stylePreset || "")
       ? source.stylePreset || fallback.stylePreset
       : fallback.stylePreset,
+    buttonImage: source.buttonImage?.trim() ?? fallback.buttonImage,
+    buttonOpacity: typeof source.buttonOpacity === "number"
+      ? Math.min(1, Math.max(0, source.buttonOpacity))
+      : fallback.buttonOpacity,
     toggleLabel: source.toggleLabel?.trim() || fallback.toggleLabel,
     eyebrow: source.eyebrow?.trim() || fallback.eyebrow,
     title: source.title?.trim() || fallback.title,

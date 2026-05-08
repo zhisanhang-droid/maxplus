@@ -9,9 +9,43 @@ import type {
   SubscribeStylePreset
 } from "../../types/admin";
 import { useSettingsStore } from "../../stores/settings";
+import { useSessionStore } from "../../stores/session";
+import { apiUpload } from "../../services/http";
 import { createDefaultSubscribeField } from "../../stores/settings/subscribe";
 
 const settingsStore = useSettingsStore();
+const sessionStore = useSessionStore();
+
+const buttonImageUploadRef = ref<HTMLInputElement | null>(null);
+const isUploadingButtonImage = ref(false);
+
+const triggerButtonImageUpload = () => {
+  buttonImageUploadRef.value?.click();
+};
+
+const handleButtonImageUpload = async (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  isUploadingButtonImage.value = true;
+
+  try {
+    const url = await apiUpload("/admin/upload", file, sessionStore.token);
+    settingsStore.subscribePopup.buttonImage = url;
+    ElMessage.success("按钮图片已上传。");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "图片上传失败。");
+  } finally {
+    isUploadingButtonImage.value = false;
+
+    if (buttonImageUploadRef.value) {
+      buttonImageUploadRef.value.value = "";
+    }
+  }
+};
 
 const fieldTypeOptions: Array<{ value: HomeContactFieldType; label: string }> = [
   { value: "text", label: "单行文本" },
@@ -307,6 +341,45 @@ const removeField = async (field: HomeContactFormFieldState) => {
           />
         </div>
 
+        <div class="subscribe-config-lead">
+          <strong>按钮外观</strong>
+          <p>上传自定义图片替换默认礼盒动画（圆形显示，支持排球等图片）；留空则保持礼盒样式。可调整按钮在页面上的默认透明度，鼠标悬停时自动恢复全显。</p>
+        </div>
+
+        <div class="editor-grid editor-grid--2">
+          <el-form-item label="按钮图片">
+            <div class="button-image-upload-row">
+              <el-input
+                v-model="settingsStore.subscribePopup.buttonImage"
+                placeholder="上传图片或粘贴路径，留空使用礼盒动画"
+                clearable
+              />
+              <el-button :loading="isUploadingButtonImage" @click="triggerButtonImageUpload">上传图片</el-button>
+              <input
+                ref="buttonImageUploadRef"
+                type="file"
+                accept="image/*"
+                style="display:none"
+                @change="handleButtonImageUpload"
+              />
+            </div>
+            <div v-if="settingsStore.subscribePopup.buttonImage" class="button-image-preview">
+              <img :src="settingsStore.subscribePopup.buttonImage" alt="按钮图片预览" />
+            </div>
+          </el-form-item>
+          <el-form-item label="默认透明度">
+            <div class="opacity-control">
+              <el-slider
+                v-model="settingsStore.subscribePopup.buttonOpacity"
+                :min="0.1"
+                :max="1"
+                :step="0.01"
+              />
+              <span class="opacity-value">{{ Math.round(settingsStore.subscribePopup.buttonOpacity * 100) }}%</span>
+            </div>
+          </el-form-item>
+        </div>
+
         <div class="editor-grid editor-grid--2">
           <el-input
             v-model="settingsStore.subscribePopup.eyebrow"
@@ -566,6 +639,47 @@ const removeField = async (field: HomeContactFormFieldState) => {
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.75rem;
   align-items: center;
+}
+
+.button-image-upload-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.button-image-upload-row .el-input {
+  flex: 1;
+}
+
+.button-image-preview {
+  margin-top: 0.65rem;
+}
+
+.button-image-preview img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid rgba(16, 33, 58, 0.1);
+}
+
+.opacity-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.opacity-control .el-slider {
+  flex: 1;
+}
+
+.opacity-value {
+  flex: 0 0 3.2rem;
+  text-align: right;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--admin-navy);
 }
 
 .contact-summary-grid {

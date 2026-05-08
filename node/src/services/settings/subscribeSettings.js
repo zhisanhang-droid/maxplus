@@ -4,6 +4,7 @@ const {
   sanitizeText,
   normalizeBoolean,
   normalizeEnum,
+  normalizeNumber,
   ensureId
 } = require("../../utils/normalizers");
 const { HttpError } = require("../../utils/errors");
@@ -99,6 +100,8 @@ function normalizeSubscribePopup(value, fallback = seedSubscribePopup) {
       subscribeStylePresetOptions,
       fallback.stylePreset || "classic-gift"
     ),
+    buttonImage: sanitizeString(base.buttonImage, { max: 400, defaultValue: "" }),
+    buttonOpacity: normalizeNumber(base.buttonOpacity, { min: 0, max: 1, defaultValue: 0.72 }),
     toggleLabel: sanitizeString(base.toggleLabel, {
       max: 60,
       defaultValue: fallback.toggleLabel

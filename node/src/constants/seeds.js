@@ -84,6 +84,8 @@ const seedSiteSettings = {
 const seedSubscribePopup = {
   enabled: true,
   stylePreset: "classic-gift",
+  buttonImage: "",
+  buttonOpacity: 0.72,
   toggleLabel: "Subscribe For Perks",
   eyebrow: "Member Benefits",
   title: "Subscribe with your email and order number.",

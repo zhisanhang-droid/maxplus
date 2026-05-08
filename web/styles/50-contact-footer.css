@@ -156,7 +156,7 @@
 }
 
 .subscribe-widget:not(.is-open) {
-  opacity: 0.72;
+  opacity: var(--subscribe-idle-opacity, 0.72);
   transition: opacity 0.25s ease;
 }
 

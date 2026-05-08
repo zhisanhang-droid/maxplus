@@ -262,6 +262,8 @@ export type SubscribeStylePreset = "classic-button" | SubscribeGiftStylePreset;
 export interface SubscribeContent {
   enabled: boolean;
   stylePreset: SubscribeStylePreset;
+  buttonImage: string;
+  buttonOpacity: number;
   toggleLabel: string;
   eyebrow: string;
   title: string;

@@ -207,7 +207,7 @@ onMounted(() => {
       `subscribe-widget--${subscribe.stylePreset}`,
       { 'is-open': isOpen, 'is-dragging': isDraggingWidget }
     ]"
-    :style="dragStyle"
+    :style="{ ...dragStyle, '--subscribe-idle-opacity': subscribe.buttonOpacity ?? 0.72 }"
     id="newsletter-sporting"
   >
     <SubscribeClassicButton
@@ -218,6 +218,26 @@ onMounted(() => {
       @open="openPanel"
       @close="closePanel"
     />
+
+    <div
+      v-else-if="subscribe.buttonImage"
+      class="subscribe-gift-drag-handle"
+      @mousedown="startDrag"
+      @touchstart.passive="startDrag"
+      @click.capture="suppressClickIfDragged"
+    >
+      <button
+        type="button"
+        class="subscribe-image-button"
+        :aria-controls="panelId"
+        :aria-expanded="isOpen"
+        :aria-label="isOpen ? 'Close subscribe dialog' : subscribe.toggleLabel"
+        @click="isOpen ? closePanel() : openPanel()"
+      >
+        <img class="subscribe-image-button__img" :src="subscribe.buttonImage" :alt="subscribe.toggleLabel" />
+        <span class="subscribe-image-button__hint">{{ subscribe.toggleLabel }}</span>
+      </button>
+    </div>
 
     <div
       v-else

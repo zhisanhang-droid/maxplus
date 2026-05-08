@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from "vue";
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from "vue";
 import { apiPost } from "../services/http";
 import SubscribeClassicButton from "./SubscribeClassicButton.vue";
 import SubscribeGiftButton from "./SubscribeGiftButton.vue";
@@ -13,6 +13,77 @@ const isOpen = ref(false);
 const isSubmitting = ref(false);
 const status = ref("");
 const formValues = reactive<Record<string, string>>({});
+
+const widgetRef = ref<HTMLDivElement | null>(null);
+const isDraggingWidget = ref(false);
+const dragStyle = ref<Record<string, string>>({});
+let dragStart = { mouseX: 0, mouseY: 0, elX: 0, elY: 0 };
+let hasDragMoved = false;
+
+const moveDrag = (event: MouseEvent | TouchEvent) => {
+  const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+  const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
+  const dx = clientX - dragStart.mouseX;
+  const dy = clientY - dragStart.mouseY;
+
+  if (!hasDragMoved && Math.abs(dx) < 5 && Math.abs(dy) < 5) {
+    return;
+  }
+
+  hasDragMoved = true;
+  isDraggingWidget.value = true;
+  event.preventDefault();
+
+  const el = widgetRef.value;
+  let x = dragStart.elX + dx;
+  let y = dragStart.elY + dy;
+
+  if (el) {
+    x = Math.max(0, Math.min(window.innerWidth - el.offsetWidth, x));
+    y = Math.max(0, Math.min(window.innerHeight - el.offsetHeight, y));
+  }
+
+  dragStyle.value = { left: `${x}px`, top: `${y}px`, right: "auto", bottom: "auto" };
+};
+
+const endDrag = () => {
+  isDraggingWidget.value = false;
+  document.removeEventListener("mousemove", moveDrag);
+  document.removeEventListener("mouseup", endDrag);
+  document.removeEventListener("touchmove", moveDrag);
+  document.removeEventListener("touchend", endDrag);
+};
+
+const startDrag = (event: MouseEvent | TouchEvent) => {
+  if (isOpen.value) {
+    return;
+  }
+
+  const el = widgetRef.value;
+
+  if (!el) {
+    return;
+  }
+
+  const clientX = "touches" in event ? event.touches[0].clientX : event.clientX;
+  const clientY = "touches" in event ? event.touches[0].clientY : event.clientY;
+  const rect = el.getBoundingClientRect();
+
+  dragStart = { mouseX: clientX, mouseY: clientY, elX: rect.left, elY: rect.top };
+  hasDragMoved = false;
+
+  document.addEventListener("mousemove", moveDrag);
+  document.addEventListener("mouseup", endDrag);
+  document.addEventListener("touchmove", moveDrag, { passive: false });
+  document.addEventListener("touchend", endDrag);
+};
+
+const suppressClickIfDragged = (event: MouseEvent) => {
+  if (hasDragMoved) {
+    event.stopPropagation();
+    hasDragMoved = false;
+  }
+};
 
 const enabledFields = computed(() =>
   props.subscribe.formFields.filter((field) => field.enabled)
@@ -97,6 +168,10 @@ watch(enabledFields, syncFormState, {
   immediate: true
 });
 
+onBeforeUnmount(() => {
+  endDrag();
+});
+
 onMounted(() => {
   syncFormState();
 
@@ -126,11 +201,13 @@ onMounted(() => {
 <template>
   <div
     v-if="subscribe.enabled"
+    ref="widgetRef"
     :class="[
       'subscribe-widget',
       `subscribe-widget--${subscribe.stylePreset}`,
-      { 'is-open': isOpen }
+      { 'is-open': isOpen, 'is-dragging': isDraggingWidget }
     ]"
+    :style="dragStyle"
     id="newsletter-sporting"
   >
     <SubscribeClassicButton
@@ -142,15 +219,22 @@ onMounted(() => {
       @close="closePanel"
     />
 
-    <SubscribeGiftButton
+    <div
       v-else
-      :controls-id="panelId"
-      :label="subscribe.toggleLabel"
-      :open="isOpen"
-      :style-preset="giftStylePreset"
-      @open="openPanel"
-      @close="closePanel"
-    />
+      class="subscribe-gift-drag-handle"
+      @mousedown="startDrag"
+      @touchstart.passive="startDrag"
+      @click.capture="suppressClickIfDragged"
+    >
+      <SubscribeGiftButton
+        :controls-id="panelId"
+        :label="subscribe.toggleLabel"
+        :open="isOpen"
+        :style-preset="giftStylePreset"
+        @open="openPanel"
+        @close="closePanel"
+      />
+    </div>
 
     <button
       v-if="isOpen"

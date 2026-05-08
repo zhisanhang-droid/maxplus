@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import TablePagination from "../../components/shared/TablePagination.vue";
 import { useTablePagination } from "../../composables/useTablePagination";
@@ -17,6 +18,12 @@ const coreFieldKeys = new Set(["name", "full_name", "customer", "email", "email_
 const { currentPage, pageSize, pageSizes, total, pagedItems } = useTablePagination(
   () => crmStore.inquiries
 );
+
+const selected = ref<InquiryRecord[]>([]);
+
+const onSelectionChange = (rows: InquiryRecord[]) => {
+  selected.value = rows;
+};
 
 const getFieldSummary = (row: InquiryRecord) => {
   const fields = row.fields?.filter((item) => !coreFieldKeys.has(item.key)) ?? [];
@@ -46,6 +53,28 @@ const removeInquiry = async (row: InquiryRecord) => {
   } catch (error) {
     ElMessage.error(error instanceof Error ? error.message : "询盘删除失败。");
   }
+};
+
+const batchRemove = async () => {
+  if (!selected.value.length) {
+    return;
+  }
+
+  await ElMessageBox.confirm(`确认删除选中的 ${selected.value.length} 条询盘吗？`, "批量删除", { type: "warning" });
+
+  let successCount = 0;
+
+  for (const row of selected.value) {
+    try {
+      await crmStore.removeInquiry(row.id);
+      successCount++;
+    } catch {
+      // continue
+    }
+  }
+
+  selected.value = [];
+  ElMessage.success(`已删除 ${successCount} 条询盘。`);
 };
 
 const exportCsv = () => {
@@ -80,11 +109,22 @@ const exportCsv = () => {
         <p class="page-card__eyebrow">线索中心</p>
         <h2>询盘管理</h2>
       </div>
-      <el-button type="primary" plain @click="exportCsv">导出 CSV</el-button>
+      <div class="header-actions">
+        <el-button
+          v-if="selected.length"
+          type="danger"
+          plain
+          @click="batchRemove"
+        >
+          批量删除（{{ selected.length }}）
+        </el-button>
+        <el-button type="primary" plain @click="exportCsv">导出 CSV</el-button>
+      </div>
     </div>
 
     <div class="table-scroll">
-      <el-table :data="pagedItems" stripe>
+      <el-table :data="pagedItems" stripe max-height="560" @selection-change="onSelectionChange">
+        <el-table-column type="selection" width="50" />
         <el-table-column prop="customer" label="客户" min-width="180" />
         <el-table-column prop="phone" label="电话" width="150" />
         <el-table-column label="来源" width="120">

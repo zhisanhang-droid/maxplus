@@ -10,6 +10,11 @@ import type { BlogRecord } from "../../types/admin";
 const router = useRouter();
 const catalogStore = useCatalogStore();
 const search = ref("");
+const selected = ref<BlogRecord[]>([]);
+
+const onSelectionChange = (rows: BlogRecord[]) => {
+  selected.value = rows;
+};
 const categoryFilter = ref("all");
 const statusFilter = ref("all");
 
@@ -59,7 +64,7 @@ const openEdit = async (record: BlogRecord) => {
 };
 
 const removePost = async (record: BlogRecord) => {
-  await ElMessageBox.confirm(`确认删除文章“${record.title}”吗？`, "提示", { type: "warning" });
+  await ElMessageBox.confirm(`确认删除文章"${record.title}"吗？`, "提示", { type: "warning" });
 
   try {
     await catalogStore.removeBlog(record.id);
@@ -67,6 +72,28 @@ const removePost = async (record: BlogRecord) => {
   } catch (error) {
     ElMessage.error(error instanceof Error ? error.message : "文章删除失败。");
   }
+};
+
+const batchRemove = async () => {
+  if (!selected.value.length) {
+    return;
+  }
+
+  await ElMessageBox.confirm(`确认删除选中的 ${selected.value.length} 篇文章吗？`, "批量删除", { type: "warning" });
+
+  let successCount = 0;
+
+  for (const row of selected.value) {
+    try {
+      await catalogStore.removeBlog(row.id);
+      successCount++;
+    } catch {
+      // continue
+    }
+  }
+
+  selected.value = [];
+  ElMessage.success(`已删除 ${successCount} 篇文章。`);
 };
 </script>
 
@@ -99,12 +126,21 @@ const removePost = async (record: BlogRecord) => {
           <el-option label="草稿" value="draft" />
           <el-option label="已发布" value="published" />
         </el-select>
+        <el-button
+          v-if="selected.length"
+          type="danger"
+          plain
+          @click="batchRemove"
+        >
+          批量删除（{{ selected.length }}）
+        </el-button>
         <el-button type="primary" @click="openCreate">新增文章</el-button>
       </div>
     </div>
 
     <div class="table-scroll">
-      <el-table :data="pagedItems" stripe>
+      <el-table :data="pagedItems" stripe max-height="560" @selection-change="onSelectionChange">
+        <el-table-column type="selection" width="50" />
         <el-table-column prop="title" label="文章标题" min-width="260" />
         <el-table-column label="文章分类" width="160">
           <template #default="{ row }">

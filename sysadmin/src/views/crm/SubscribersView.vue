@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
 import TablePagination from "../../components/shared/TablePagination.vue";
 import { useTablePagination } from "../../composables/useTablePagination";
@@ -10,35 +11,23 @@ const { currentPage, pageSize, pageSizes, total, pagedItems } = useTablePaginati
   () => crmStore.subscribers
 );
 
+const selected = ref<SubscriberRecord[]>([]);
+
+const onSelectionChange = (rows: SubscriberRecord[]) => {
+  selected.value = rows;
+};
+
 const resolveStatusType = (status: string) => {
-  if (status === "sent") {
-    return "success";
-  }
-
-  if (status === "failed") {
-    return "danger";
-  }
-
-  if (status === "skipped") {
-    return "warning";
-  }
-
+  if (status === "sent") return "success";
+  if (status === "failed") return "danger";
+  if (status === "skipped") return "warning";
   return "info";
 };
 
 const resolveStatusLabel = (status: string) => {
-  if (status === "sent") {
-    return "已发送";
-  }
-
-  if (status === "failed") {
-    return "发送失败";
-  }
-
-  if (status === "skipped") {
-    return "已跳过";
-  }
-
+  if (status === "sent") return "已发送";
+  if (status === "failed") return "发送失败";
+  if (status === "skipped") return "已跳过";
   return "待发送";
 };
 
@@ -74,6 +63,28 @@ const removeSubscriber = async (row: SubscriberRecord) => {
     ElMessage.error(error instanceof Error ? error.message : "订阅删除失败。");
   }
 };
+
+const batchRemove = async () => {
+  if (!selected.value.length) {
+    return;
+  }
+
+  await ElMessageBox.confirm(`确认删除选中的 ${selected.value.length} 条订阅吗？`, "批量删除", { type: "warning" });
+
+  let successCount = 0;
+
+  for (const row of selected.value) {
+    try {
+      await crmStore.removeSubscriber(row.id);
+      successCount++;
+    } catch {
+      // continue
+    }
+  }
+
+  selected.value = [];
+  ElMessage.success(`已删除 ${successCount} 条订阅。`);
+};
 </script>
 
 <template>
@@ -83,12 +94,23 @@ const removeSubscriber = async (row: SubscriberRecord) => {
         <p class="page-card__eyebrow">线索中心</p>
         <h2>订阅管理</h2>
       </div>
-      <el-button type="primary" plain @click="exportCsv">导出 CSV</el-button>
+      <div class="header-actions">
+        <el-button
+          v-if="selected.length"
+          type="danger"
+          plain
+          @click="batchRemove"
+        >
+          批量删除（{{ selected.length }}）
+        </el-button>
+        <el-button type="primary" plain @click="exportCsv">导出 CSV</el-button>
+      </div>
     </div>
 
     <div class="table-scroll">
-      <el-table :data="pagedItems" stripe>
-        <el-table-column type="expand" width="56">
+      <el-table :data="pagedItems" stripe max-height="560" @selection-change="onSelectionChange">
+        <el-table-column type="selection" width="50" />
+        <el-table-column type="expand" width="50">
           <template #default="{ row }">
             <div class="subscriber-expand">
               <div class="subscriber-expand__section">

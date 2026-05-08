@@ -369,14 +369,17 @@ const removeField = async (field: HomeContactFormFieldState) => {
             </div>
           </div>
           <div class="button-appearance-card">
-            <span class="button-appearance-label">默认透明度：{{ Math.round(settingsStore.subscribePopup.buttonOpacity * 100) }}%</span>
-            <el-slider
-              v-model="settingsStore.subscribePopup.buttonOpacity"
-              :min="0.1"
-              :max="1"
-              :step="0.01"
+            <span class="button-appearance-label">默认透明度（10–100）</span>
+            <el-input-number
+              :model-value="Math.round(settingsStore.subscribePopup.buttonOpacity * 100)"
+              :min="10"
+              :max="100"
+              :step="5"
+              :precision="0"
+              style="width:100%"
+              @change="(val: number) => { settingsStore.subscribePopup.buttonOpacity = val / 100 }"
             />
-            <p class="button-appearance-hint">鼠标悬停或弹窗打开时自动恢复全显</p>
+            <p class="button-appearance-hint">填 100 完全不透明，填 50 半透明，悬停时始终恢复全显</p>
           </div>
         </div>
 

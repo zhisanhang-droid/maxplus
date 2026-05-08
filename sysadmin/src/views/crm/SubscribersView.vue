@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import TablePagination from "../../components/shared/TablePagination.vue";
 import { useTablePagination } from "../../composables/useTablePagination";
 import { useCrmStore } from "../../stores/crm";
+import type { SubscriberRecord } from "../../types/admin";
 
 const crmStore = useCrmStore();
 const { currentPage, pageSize, pageSizes, total, pagedItems } = useTablePagination(
@@ -62,6 +63,17 @@ const exportCsv = () => {
   URL.revokeObjectURL(link.href);
   ElMessage.success("订阅列表已导出。");
 };
+
+const removeSubscriber = async (row: SubscriberRecord) => {
+  await ElMessageBox.confirm(`确认删除订阅"${row.email}"吗？`, "提示", { type: "warning" });
+
+  try {
+    await crmStore.removeSubscriber(row.id);
+    ElMessage.success("订阅已删除。");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "订阅删除失败。");
+  }
+};
 </script>
 
 <template>
@@ -110,6 +122,11 @@ const exportCsv = () => {
           </template>
         </el-table-column>
         <el-table-column prop="createdAt" label="创建时间" width="180" />
+        <el-table-column label="操作" width="100" fixed="right">
+          <template #default="{ row }">
+            <el-button link type="danger" @click="removeSubscriber(row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 

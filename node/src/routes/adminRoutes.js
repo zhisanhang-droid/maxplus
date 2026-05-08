@@ -63,7 +63,9 @@ const {
 const {
   listInquiries,
   updateInquiry,
-  listSubscribers
+  deleteInquiry,
+  listSubscribers,
+  deleteSubscriber
 } = require("../services/crmService");
 const { listLogs, addLog, getDashboardSummary } = require("../services/systemService");
 
@@ -380,9 +382,29 @@ router.post(
 );
 
 router.post(
+  "/inquiries/delete",
+  asyncHandler(async (req, res) => {
+    const payload = resolveRequestPayload(req);
+    await deleteInquiry(payload.id);
+    await writeOperationLog(req, `删除询盘：${payload.id}`);
+    return ok(res, null, "询盘已删除。");
+  })
+);
+
+router.post(
   "/subscribers/list",
   asyncHandler(async (req, res) => {
     return ok(res, await listSubscribers());
+  })
+);
+
+router.post(
+  "/subscribers/delete",
+  asyncHandler(async (req, res) => {
+    const payload = resolveRequestPayload(req);
+    await deleteSubscriber(payload.id);
+    await writeOperationLog(req, `删除订阅：${payload.id}`);
+    return ok(res, null, "订阅已删除。");
   })
 );
 

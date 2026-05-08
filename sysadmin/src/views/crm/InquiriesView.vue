@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ElMessage } from "element-plus";
+import { ElMessage, ElMessageBox } from "element-plus";
 import TablePagination from "../../components/shared/TablePagination.vue";
 import { useTablePagination } from "../../composables/useTablePagination";
 import { useCrmStore } from "../../stores/crm";
@@ -36,6 +36,41 @@ const saveStatus = async (row: InquiryRecord) => {
     ElMessage.error(error instanceof Error ? error.message : "询盘状态更新失败。");
   }
 };
+
+const removeInquiry = async (row: InquiryRecord) => {
+  await ElMessageBox.confirm(`确认删除客户"${row.customer}"的询盘吗？`, "提示", { type: "warning" });
+
+  try {
+    await crmStore.removeInquiry(row.id);
+    ElMessage.success("询盘已删除。");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "询盘删除失败。");
+  }
+};
+
+const exportCsv = () => {
+  const headers = ["客户", "邮箱", "电话", "来源", "公司", "兴趣方向", "留言", "状态", "负责人", "创建时间"];
+  const rows = crmStore.inquiries.map((item) => [
+    item.customer,
+    item.email || "",
+    item.phone || "",
+    sourceLabelMap[item.source] ?? item.source,
+    item.company || "",
+    item.interest || "",
+    (item.message || "").replace(/[\r\n,]/g, " "),
+    item.status,
+    item.assignee || "",
+    item.createdAt
+  ].map((v) => `"${String(v).replace(/"/g, '""')}"`).join(","));
+  const csv = [headers.join(","), ...rows].join("\n");
+  const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" });
+  const link = document.createElement("a");
+  link.href = URL.createObjectURL(blob);
+  link.download = "询盘列表.csv";
+  link.click();
+  URL.revokeObjectURL(link.href);
+  ElMessage.success("询盘列表已导出。");
+};
 </script>
 
 <template>
@@ -45,6 +80,7 @@ const saveStatus = async (row: InquiryRecord) => {
         <p class="page-card__eyebrow">线索中心</p>
         <h2>询盘管理</h2>
       </div>
+      <el-button type="primary" plain @click="exportCsv">导出 CSV</el-button>
     </div>
 
     <div class="table-scroll">
@@ -78,6 +114,11 @@ const saveStatus = async (row: InquiryRecord) => {
         </el-table-column>
         <el-table-column prop="assignee" label="负责人" width="140" />
         <el-table-column prop="message" label="留言内容" min-width="280" />
+        <el-table-column label="操作" width="100" fixed="right">
+          <template #default="{ row }">
+            <el-button link type="danger" @click="removeInquiry(row)">删除</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
 

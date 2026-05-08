@@ -1,14 +1,47 @@
 <script setup lang="ts">
-import { computed, reactive, watch } from "vue";
+import { computed, reactive, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import RichTextEditor from "../../components/content/RichTextEditor.vue";
 import { useCatalogStore } from "../../stores/catalog";
+import { useSessionStore } from "../../stores/session";
+import { apiUpload } from "../../services/http";
 import type { BlogRecord } from "../../types/admin";
 
 const route = useRoute();
 const router = useRouter();
 const catalogStore = useCatalogStore();
+const sessionStore = useSessionStore();
+const coverUploadRef = ref<HTMLInputElement | null>(null);
+const isUploading = ref(false);
+
+const triggerCoverUpload = () => {
+  coverUploadRef.value?.click();
+};
+
+const handleCoverUpload = async (event: Event) => {
+  const file = (event.target as HTMLInputElement).files?.[0];
+
+  if (!file) {
+    return;
+  }
+
+  isUploading.value = true;
+
+  try {
+    const url = await apiUpload("/admin/upload", file, sessionStore.token);
+    draft.coverImage = url;
+    ElMessage.success("封面图已上传。");
+  } catch (error) {
+    ElMessage.error(error instanceof Error ? error.message : "封面图上传失败。");
+  } finally {
+    isUploading.value = false;
+
+    if (coverUploadRef.value) {
+      coverUploadRef.value.value = "";
+    }
+  }
+};
 
 function createDraft(): BlogRecord {
   return {
@@ -199,7 +232,17 @@ const goBack = async () => {
 
       <div class="editor-grid editor-grid--2">
         <el-form-item label="封面图地址">
-          <el-input v-model="draft.coverImage" placeholder="如 /images/hero-training.svg" />
+          <div class="cover-upload-row">
+            <el-input v-model="draft.coverImage" placeholder="如 /images/hero-training.svg" />
+            <el-button :loading="isUploading" @click="triggerCoverUpload">上传图片</el-button>
+            <input
+              ref="coverUploadRef"
+              type="file"
+              accept="image/*"
+              style="display:none"
+              @change="handleCoverUpload"
+            />
+          </div>
         </el-form-item>
         <el-form-item label="Meta 文案">
           <el-input v-model="draft.meta" placeholder="如 Brand Team / 2026-04-02" />
@@ -223,3 +266,15 @@ const goBack = async () => {
     </section>
   </div>
 </template>
+
+<style scoped>
+.cover-upload-row {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.cover-upload-row .el-input {
+  flex: 1;
+}
+</style>

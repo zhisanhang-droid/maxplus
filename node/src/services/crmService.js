@@ -535,10 +535,32 @@ async function createSubscriber(input) {
   };
 }
 
+async function deleteInquiry(id) {
+  const safeId = sanitizeString(id, { max: 40 });
+
+  if (!safeId) {
+    throw new HttpError(400, "询盘 ID 不能为空。");
+  }
+
+  await query(`DELETE FROM inquiries WHERE id = ?`, [safeId]);
+}
+
+async function deleteSubscriber(id) {
+  const safeId = sanitizeString(id, { max: 40 });
+
+  if (!safeId) {
+    throw new HttpError(400, "订阅 ID 不能为空。");
+  }
+
+  await query(`DELETE FROM subscribers WHERE id = ?`, [safeId]);
+}
+
 module.exports = {
   listInquiries,
   updateInquiry,
   createInquiry,
+  deleteInquiry,
   listSubscribers,
-  createSubscriber
+  createSubscriber,
+  deleteSubscriber
 };

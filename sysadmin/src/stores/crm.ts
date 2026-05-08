@@ -50,10 +50,34 @@ export const useCrmStore = defineStore("crm", () => {
     }
   };
 
+  const removeInquiry = async (id: string) => {
+    const sessionStore = useSessionStore();
+
+    if (!sessionStore.token) {
+      throw new Error("未登录或登录已过期。");
+    }
+
+    await apiPost<null>("/admin/inquiries/delete", { id }, { token: sessionStore.token });
+    inquiries.value = inquiries.value.filter((item) => item.id !== id);
+  };
+
+  const removeSubscriber = async (id: string) => {
+    const sessionStore = useSessionStore();
+
+    if (!sessionStore.token) {
+      throw new Error("未登录或登录已过期。");
+    }
+
+    await apiPost<null>("/admin/subscribers/delete", { id }, { token: sessionStore.token });
+    subscribers.value = subscribers.value.filter((item) => item.id !== id);
+  };
+
   return {
     inquiries,
     subscribers,
     hydrate,
-    updateInquiry
+    updateInquiry,
+    removeInquiry,
+    removeSubscriber
   };
 });

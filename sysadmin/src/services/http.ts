@@ -77,6 +77,25 @@ async function postJson<T>(path: string, payload: unknown, options: PostOptions)
   return result;
 }
 
+export async function apiUpload(path: string, file: File, token: string | null): Promise<string> {
+  const form = new FormData();
+  form.append("file", file);
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    method: "POST",
+    headers: token ? { Authorization: `Bearer ${token}` } : {},
+    body: form
+  });
+
+  const result = await response.json() as { success: boolean; message: string; data: { url: string } };
+
+  if (!response.ok || !result.success) {
+    throw new Error(result.message || "上传失败。");
+  }
+
+  return result.data.url;
+}
+
 export async function apiPost<T>(
   path: string,
   payload: unknown,

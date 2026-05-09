@@ -23,6 +23,23 @@ const isInternalLink = (href: string) => href.startsWith("/");
         <p>{{ footer.text }}</p>
       </div>
 
+      <div class="footer-links">
+        <div>
+          <strong>{{ footer.contactTitle }}</strong>
+          <template v-for="link in footer.contactLinks" :key="link.label">
+            <a v-if="!isInternalLink(link.href)" :href="link.href" target="_blank" rel="noopener">{{ link.label }}</a>
+            <RouterLink v-else :to="link.href">{{ link.label }}</RouterLink>
+          </template>
+        </div>
+        <div>
+          <strong>{{ footer.socialTitle }}</strong>
+          <template v-for="link in footer.socialLinks" :key="link.label">
+            <a v-if="!isInternalLink(link.href)" :href="link.href" target="_blank" rel="noopener">{{ link.label }}</a>
+            <RouterLink v-else :to="link.href">{{ link.label }}</RouterLink>
+          </template>
+        </div>
+      </div>
+
     </div>
 
     <div class="shell footer-meta">

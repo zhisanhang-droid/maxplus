@@ -16,12 +16,13 @@ import { createDefaultSubscribeField } from "../../stores/settings/subscribe";
 const settingsStore = useSettingsStore();
 const sessionStore = useSessionStore();
 
-const buttonOpacityPercent = computed({
-  get: () => Math.round(settingsStore.subscribePopup.buttonOpacity * 100),
-  set: (val: number) => {
-    settingsStore.subscribePopup.buttonOpacity = (val ?? 10) / 100;
-  }
-});
+const buttonOpacityPercent = ref(Math.round(settingsStore.subscribePopup.buttonOpacity * 100));
+
+const commitOpacity = (val: number | null) => {
+  const safe = typeof val === "number" && isFinite(val) ? val : buttonOpacityPercent.value;
+  buttonOpacityPercent.value = Math.min(100, Math.max(10, Math.round(safe)));
+  settingsStore.subscribePopup.buttonOpacity = buttonOpacityPercent.value / 100;
+};
 
 const buttonImageUploadRef = ref<HTMLInputElement | null>(null);
 const isUploadingButtonImage = ref(false);
@@ -227,6 +228,7 @@ const handleTypeChange = () => {
 
 const saveModuleSettings = async () => {
   try {
+    commitOpacity(buttonOpacityPercent.value);
     settingsStore.subscribePopup.benefits = settingsStore.subscribePopup.benefits
       .map((item) => item.trim())
       .filter(Boolean);
@@ -384,6 +386,7 @@ const removeField = async (field: HomeContactFormFieldState) => {
               :step="5"
               :precision="0"
               style="width:100%"
+              @change="commitOpacity"
             />
             <p class="button-appearance-hint">填 100 完全不透明，填 50 半透明，悬停时始终恢复全显</p>
           </div>

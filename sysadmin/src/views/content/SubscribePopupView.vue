@@ -16,6 +16,13 @@ import { createDefaultSubscribeField } from "../../stores/settings/subscribe";
 const settingsStore = useSettingsStore();
 const sessionStore = useSessionStore();
 
+const buttonOpacityPercent = computed({
+  get: () => Math.round(settingsStore.subscribePopup.buttonOpacity * 100),
+  set: (val: number) => {
+    settingsStore.subscribePopup.buttonOpacity = (val ?? 10) / 100;
+  }
+});
+
 const buttonImageUploadRef = ref<HTMLInputElement | null>(null);
 const isUploadingButtonImage = ref(false);
 
@@ -35,7 +42,7 @@ const handleButtonImageUpload = async (event: Event) => {
   try {
     const url = await apiUpload("/admin/upload", file, sessionStore.token);
     settingsStore.subscribePopup.buttonImage = url;
-    ElMessage.success("按钮图片已上传。");
+    await saveModuleSettings();
   } catch (error) {
     ElMessage.error(error instanceof Error ? error.message : "图片上传失败。");
   } finally {
@@ -371,13 +378,12 @@ const removeField = async (field: HomeContactFormFieldState) => {
           <div class="button-appearance-card">
             <span class="button-appearance-label">默认透明度（10–100）</span>
             <el-input-number
-              :model-value="Math.round(settingsStore.subscribePopup.buttonOpacity * 100)"
+              v-model="buttonOpacityPercent"
               :min="10"
               :max="100"
               :step="5"
               :precision="0"
               style="width:100%"
-              @change="(val: number) => { settingsStore.subscribePopup.buttonOpacity = val / 100 }"
             />
             <p class="button-appearance-hint">填 100 完全不透明，填 50 半透明，悬停时始终恢复全显</p>
           </div>

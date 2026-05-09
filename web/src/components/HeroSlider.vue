@@ -74,22 +74,6 @@ onMounted(() => {
             <h1>{{ slide.title }}</h1>
             <p class="hero-slide__text">{{ slide.text }}</p>
 
-            <div class="hero-slide__actions">
-              <RouterLink
-                v-for="action in slide.actions"
-                :key="action.label"
-                :class="[
-                  'button',
-                  action.kind === 'ghost' ? 'button--ghost' : 'button--primary',
-                  {
-                    'button--xmas': isChristmasTheme && action.kind === 'primary'
-                  }
-                ]"
-                :to="action.href"
-              >
-                {{ action.label }}
-              </RouterLink>
-            </div>
           </div>
         </div>
       </article>

@@ -539,6 +539,19 @@
   letter-spacing: 0.1em;
 }
 
+.video-feature__native-player {
+  display: block;
+  width: 100%;
+  min-height: clamp(240px, 32vw, 400px);
+  background: #000;
+  border-radius: 12px 12px 0 0;
+  object-fit: contain;
+}
+
+.video-feature__thumb-link {
+  display: block;
+}
+
 .video-list {
   display: grid;
   gap: 1rem;

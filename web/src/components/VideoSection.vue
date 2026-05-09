@@ -29,31 +29,37 @@ const getMediaStyle = (imageUrl?: string) => ({
       </div>
 
       <div class="video-showcase__layout video-showcase__layout--single">
-        <RouterLink
-          :to="videos.featured.href"
-          class="video-feature reveal"
-          v-reveal
-        >
-          <div
-            v-if="videos.featured.coverImage"
-            class="video-feature__media video-feature__media--photo"
-            :style="getMediaStyle(videos.featured.coverImage)"
+        <div class="video-feature reveal" v-reveal>
+          <video
+            v-if="videos.featured.videoUrl"
+            class="video-feature__native-player"
+            controls
+            :poster="videos.featured.coverImage"
           >
-            <span class="video-feature__eyebrow">{{ videos.featured.eyebrow }}</span>
-            <span class="video-feature__play" aria-hidden="true">▶</span>
-            <span class="video-feature__duration">{{ videos.featured.duration }}</span>
-          </div>
-          <div v-else :class="['video-feature__media', videos.featured.visualClass]">
-            <span class="video-feature__eyebrow">{{ videos.featured.eyebrow }}</span>
-            <span class="video-feature__play" aria-hidden="true">▶</span>
-            <span class="video-feature__duration">{{ videos.featured.duration }}</span>
-          </div>
+            <source :src="videos.featured.videoUrl" />
+          </video>
+          <RouterLink v-else :to="videos.featured.href" class="video-feature__thumb-link">
+            <div
+              v-if="videos.featured.coverImage"
+              class="video-feature__media video-feature__media--photo"
+              :style="getMediaStyle(videos.featured.coverImage)"
+            >
+              <span class="video-feature__eyebrow">{{ videos.featured.eyebrow }}</span>
+              <span class="video-feature__play" aria-hidden="true">▶</span>
+              <span class="video-feature__duration">{{ videos.featured.duration }}</span>
+            </div>
+            <div v-else :class="['video-feature__media', videos.featured.visualClass]">
+              <span class="video-feature__eyebrow">{{ videos.featured.eyebrow }}</span>
+              <span class="video-feature__play" aria-hidden="true">▶</span>
+              <span class="video-feature__duration">{{ videos.featured.duration }}</span>
+            </div>
+          </RouterLink>
 
           <div class="video-feature__body">
             <h3>{{ videos.featured.title }}</h3>
-            <span class="video-feature__cta">{{ videos.featured.ctaLabel }}</span>
+            <RouterLink :to="videos.featured.href" class="video-feature__cta">{{ videos.featured.ctaLabel }}</RouterLink>
           </div>
-        </RouterLink>
+        </div>
       </div>
     </div>
   </section>

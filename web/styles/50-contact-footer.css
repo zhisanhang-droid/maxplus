@@ -12,9 +12,13 @@
 }
 
 .contact-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
-  gap: 1.2rem;
+  display: flex;
+  justify-content: center;
+}
+
+.contact-layout .contact-form {
+  width: 100%;
+  max-width: 780px;
 }
 
 .contact-copy,

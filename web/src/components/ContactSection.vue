@@ -105,12 +105,6 @@ const submit = async () => {
 <template>
   <section class="section contact-zone" id="feedback">
     <div class="shell contact-layout">
-      <div class="contact-copy reveal" v-reveal>
-        <p class="eyebrow">{{ contact.eyebrow }}</p>
-        <h2>{{ contact.title }}</h2>
-        <p v-if="contact.text">{{ contact.text }}</p>
-      </div>
-
       <form class="contact-form reveal" v-reveal @submit.prevent="submit">
         <div class="contact-form__grid">
           <label

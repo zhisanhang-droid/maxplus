@@ -1,14 +1,20 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import type { VideoContent } from "../types/content";
 import SectionHeading from "./SectionHeading.vue";
+import { resolveVideoSource } from "../utils/video";
 
-defineProps<{
+const props = defineProps<{
   videos: VideoContent;
 }>();
 
 const getMediaStyle = (imageUrl?: string) => ({
   backgroundImage: `linear-gradient(180deg, rgba(8, 18, 31, 0.12), rgba(8, 18, 31, 0.52)), url(${imageUrl})`
 });
+
+const featuredVideoSource = computed(() =>
+  resolveVideoSource(props.videos.featured.videoUrl ?? "")
+);
 </script>
 
 <template>
@@ -31,12 +37,12 @@ const getMediaStyle = (imageUrl?: string) => ({
       <div class="video-showcase__layout video-showcase__layout--single">
         <div class="video-feature reveal" v-reveal>
           <video
-            v-if="videos.featured.videoUrl"
+            v-if="featuredVideoSource.kind === 'file'"
             class="video-feature__native-player"
             controls
             :poster="videos.featured.coverImage"
           >
-            <source :src="videos.featured.videoUrl" />
+            <source :src="featuredVideoSource.src" />
           </video>
           <RouterLink v-else :to="videos.featured.href" class="video-feature__thumb-link">
             <div

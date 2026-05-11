@@ -242,7 +242,9 @@ async function saveSiteSettings(payload) {
       text: sanitizeText((payload.footer || {}).text, { max: 400, defaultValue: current.footer?.text || "" }),
       meta1: sanitizeString((payload.footer || {}).meta1, { max: 200, defaultValue: current.footer?.meta1 || "" }),
       meta2: sanitizeString((payload.footer || {}).meta2, { max: 200, defaultValue: current.footer?.meta2 || "" }),
-      maxWidth: Math.min(1220, Math.max(400, parseInt((payload.footer || {}).maxWidth, 10) || current.footer?.maxWidth || 813))
+      maxWidth: Math.min(1220, Math.max(400, parseInt((payload.footer || {}).maxWidth, 10) || current.footer?.maxWidth || 813)),
+      paddingY: Math.min(60, Math.max(4, parseInt((payload.footer || {}).paddingY, 10) || current.footer?.paddingY || 16)),
+      contactPaddingBottom: Math.min(120, Math.max(0, parseInt((payload.footer || {}).contactPaddingBottom, 10) || current.footer?.contactPaddingBottom || 48))
     },
     theme: normalizeSiteTheme(themeInput, current.theme),
     mailer: normalizeMailerSettingsInput(mailerInput, currentStoredMailer)

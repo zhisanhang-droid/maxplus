@@ -333,7 +333,9 @@ export const siteContent: SiteContent = {
     policyLinks: footerPolicyLinks,
     meta1: "© 2026 MaxPlus Sporting Goods. All rights reserved.",
     meta2: "Built for catalog display, wholesale leads, and content growth.",
-    maxWidth: 813
+    maxWidth: 813,
+    paddingY: 16,
+    contactPaddingBottom: 48
   },
   subscribe: {
     enabled: true,

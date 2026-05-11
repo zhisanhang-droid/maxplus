@@ -255,6 +255,8 @@ export interface FooterContent {
   meta1: string;
   meta2: string;
   maxWidth: number;
+  paddingY: number;
+  contactPaddingBottom: number;
 }
 
 export type SubscribeGiftStylePreset = "classic-gift" | "sport-burst" | "midnight-gift";

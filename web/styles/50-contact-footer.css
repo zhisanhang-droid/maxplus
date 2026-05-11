@@ -1,5 +1,5 @@
 .contact-zone {
-  padding-bottom: 3rem;
+  padding-bottom: var(--contact-zone-pb, 48px);
 }
 
 .home-page > .section {
@@ -8,7 +8,7 @@
 }
 
 .home-page > .contact-zone {
-  padding-bottom: 16px;
+  padding-bottom: var(--contact-zone-pb, 48px);
 }
 
 .contact-layout {
@@ -89,7 +89,7 @@
 }
 
 .site-footer {
-  padding: 1rem 0 0.8rem;
+  padding: var(--footer-pad-y, 16px) 0;
   color: rgba(255, 255, 255, 0.84);
   background: linear-gradient(180deg, var(--navy) 0%, #0b1830 100%);
 }

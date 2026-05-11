@@ -28,6 +28,9 @@ export interface RawSiteSettings {
     text?: string;
     meta1?: string;
     meta2?: string;
+    maxWidth?: number;
+    paddingY?: number;
+    contactPaddingBottom?: number;
   };
 }
 

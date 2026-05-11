@@ -228,6 +228,24 @@ const save = async () => {
             />
             <div class="editor-hint">全站内容宽度上限为 1220px，建议页脚设置在 600–1000px 之间。</div>
           </el-form-item>
+          <el-form-item :label="`页脚上下内边距：${settingsStore.siteSettings.footer.paddingY}px`">
+            <el-slider
+              v-model="settingsStore.siteSettings.footer.paddingY"
+              :min="4"
+              :max="60"
+              :step="2"
+            />
+            <div class="editor-hint">控制深色页脚区域的上下高度，数值越小越紧凑。</div>
+          </el-form-item>
+          <el-form-item :label="`联系区底部间距：${settingsStore.siteSettings.footer.contactPaddingBottom}px`">
+            <el-slider
+              v-model="settingsStore.siteSettings.footer.contactPaddingBottom"
+              :min="0"
+              :max="120"
+              :step="4"
+            />
+            <div class="editor-hint">控制联系表单下方到页脚之间的留白空间。</div>
+          </el-form-item>
         </el-form>
       </section>
     </div>

@@ -69,18 +69,22 @@ export function normalizeMailerSettings(
 }
 
 export function createDefaultFooterSettings(): FooterSettings {
-  return { text: "", meta1: "", meta2: "", maxWidth: 813 };
+  return { text: "", meta1: "", meta2: "", maxWidth: 813, paddingY: 16, contactPaddingBottom: 48 };
 }
 
 export function normalizeFooterSettings(value?: Partial<FooterSettings> | null): FooterSettings {
   const fallback = createDefaultFooterSettings();
   const source = value ?? {};
   const rawWidth = Number(source.maxWidth);
+  const rawPaddingY = Number(source.paddingY);
+  const rawContactPb = Number(source.contactPaddingBottom);
   return {
     text: source.text?.trim() ?? fallback.text,
     meta1: source.meta1?.trim() ?? fallback.meta1,
     meta2: source.meta2?.trim() ?? fallback.meta2,
-    maxWidth: rawWidth >= 400 && rawWidth <= 1220 ? rawWidth : fallback.maxWidth
+    maxWidth: rawWidth >= 400 && rawWidth <= 1220 ? rawWidth : fallback.maxWidth,
+    paddingY: rawPaddingY >= 4 && rawPaddingY <= 60 ? rawPaddingY : fallback.paddingY,
+    contactPaddingBottom: rawContactPb >= 0 && rawContactPb <= 120 ? rawContactPb : fallback.contactPaddingBottom
   };
 }
 

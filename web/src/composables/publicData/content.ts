@@ -296,6 +296,12 @@ export function buildSiteContent(
   content.footer.meta1 = payload.siteSettings.footer?.meta1 || content.footer.meta1;
   content.footer.meta2 = payload.siteSettings.footer?.meta2 || content.footer.meta2;
   content.footer.maxWidth = Number(payload.siteSettings.footer?.maxWidth) || content.footer.maxWidth;
+  if (payload.siteSettings.footer?.paddingY != null) {
+    content.footer.paddingY = Number(payload.siteSettings.footer.paddingY);
+  }
+  if (payload.siteSettings.footer?.contactPaddingBottom != null) {
+    content.footer.contactPaddingBottom = Number(payload.siteSettings.footer.contactPaddingBottom);
+  }
   content.footer.contactLinks = [
     {
       href: `mailto:${payload.siteSettings.brand.salesEmail}`,

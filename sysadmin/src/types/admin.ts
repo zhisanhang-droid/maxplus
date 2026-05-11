@@ -70,6 +70,8 @@ export interface FooterSettings {
   meta1: string;
   meta2: string;
   maxWidth: number;
+  paddingY: number;
+  contactPaddingBottom: number;
 }
 
 export interface SiteSettingsState {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, watchEffect } from "vue";
 import BackToTopRocket from "./components/BackToTopRocket.vue";
 import CookieBanner from "./components/CookieBanner.vue";
 import SeasonalThemeLayer from "./components/SeasonalThemeLayer.vue";
@@ -16,6 +16,12 @@ const siteTheme = computed(() => content.value.theme);
 
 useDocumentMeta(content);
 useSiteTheme(siteTheme);
+
+watchEffect(() => {
+  const f = content.value.footer;
+  document.documentElement.style.setProperty("--footer-pad-y", `${f.paddingY}px`);
+  document.documentElement.style.setProperty("--contact-zone-pb", `${f.contactPaddingBottom}px`);
+});
 </script>
 
 <template>

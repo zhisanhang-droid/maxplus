@@ -225,7 +225,6 @@ const save = async () => {
               :min="400"
               :max="1220"
               :step="10"
-              show-input
             />
             <div class="editor-hint">全站内容宽度上限为 1220px，建议页脚设置在 600–1000px 之间。</div>
           </el-form-item>

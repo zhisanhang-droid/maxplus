@@ -94,9 +94,6 @@
   background: linear-gradient(180deg, var(--navy) 0%, #0b1830 100%);
 }
 
-.site-footer .shell {
-  max-width: var(--footer-shell-max, 813px);
-}
 
 .footer-layout {
   display: flex;

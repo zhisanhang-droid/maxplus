@@ -1,18 +1,23 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import type { FooterContent, HeaderContent } from "../types/content";
 import BrandLogo from "./BrandLogo.vue";
 
-defineProps<{
+const props = defineProps<{
   footer: FooterContent;
   header: HeaderContent;
 }>();
 
 const isInternalLink = (href: string) => href.startsWith("/");
+
+const shellStyle = computed(() =>
+  props.footer.maxWidth ? { maxWidth: `${props.footer.maxWidth}px` } : {}
+);
 </script>
 
 <template>
-  <footer class="site-footer" :style="footer.maxWidth ? `--footer-shell-max: ${footer.maxWidth}px` : ''">
-    <div class="shell footer-layout">
+  <footer class="site-footer">
+    <div class="shell footer-layout" :style="shellStyle">
       <div class="footer-brand">
         <BrandLogo
           :sub-label="header.logoSub"
@@ -42,7 +47,7 @@ const isInternalLink = (href: string) => href.startsWith("/");
 
     </div>
 
-    <div class="shell footer-meta">
+    <div class="shell footer-meta" :style="shellStyle">
       <span>{{ footer.meta1 }}</span>
       <span>{{ footer.meta2 }}</span>
     </div>

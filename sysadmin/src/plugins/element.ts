@@ -5,13 +5,17 @@ import {
   ElDialog,
   ElForm,
   ElFormItem,
+  ElImage,
   ElInput,
   ElInputNumber,
   ElMenu,
   ElMenuItem,
   ElOption,
+  ElPagination,
+  ElRate,
   ElSelect,
   ElSegmented,
+  ElSlider,
   ElSubMenu,
   ElSwitch,
   ElTable,
@@ -25,14 +29,19 @@ import "element-plus/es/components/date-picker/style/css";
 import "element-plus/es/components/dialog/style/css";
 import "element-plus/es/components/form/style/css";
 import "element-plus/es/components/form-item/style/css";
+import "element-plus/es/components/image/style/css";
+import "element-plus/es/components/image-viewer/style/css";
 import "element-plus/es/components/input/style/css";
 import "element-plus/es/components/input-number/style/css";
 import "element-plus/es/components/message/style/css";
 import "element-plus/es/components/message-box/style/css";
 import "element-plus/es/components/menu/style/css";
 import "element-plus/es/components/option/style/css";
+import "element-plus/es/components/pagination/style/css";
+import "element-plus/es/components/rate/style/css";
 import "element-plus/es/components/select/style/css";
 import "element-plus/es/components/segmented/style/css";
+import "element-plus/es/components/slider/style/css";
 import "element-plus/es/components/sub-menu/style/css";
 import "element-plus/es/components/switch/style/css";
 import "element-plus/es/components/table/style/css";
@@ -46,13 +55,17 @@ const components = [
   ElDialog,
   ElForm,
   ElFormItem,
+  ElImage,
   ElInput,
   ElInputNumber,
   ElMenu,
   ElMenuItem,
   ElOption,
+  ElPagination,
+  ElRate,
   ElSelect,
   ElSegmented,
+  ElSlider,
   ElSubMenu,
   ElSwitch,
   ElTable,

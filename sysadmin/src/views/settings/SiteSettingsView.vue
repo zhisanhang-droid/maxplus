@@ -189,6 +189,38 @@ const save = async () => {
           </div>
         </el-form>
       </section>
+
+      <section class="page-card">
+        <div class="page-card__header">
+          <div>
+            <p class="page-card__eyebrow">页脚文案</p>
+            <h2>底部说明文字配置</h2>
+          </div>
+        </div>
+
+        <el-form label-position="top" class="editor-form">
+          <el-form-item label="品牌描述（页脚左侧段落）">
+            <el-input
+              v-model="settingsStore.siteSettings.footer.text"
+              type="textarea"
+              :rows="3"
+              placeholder="如：Sporting goods brand site with category depth..."
+            />
+          </el-form-item>
+          <el-form-item label="底栏左侧文字（版权声明）">
+            <el-input
+              v-model="settingsStore.siteSettings.footer.meta1"
+              placeholder="如：© 2026 MaxPlus Sporting Goods. All rights reserved."
+            />
+          </el-form-item>
+          <el-form-item label="底栏右侧文字（副说明）">
+            <el-input
+              v-model="settingsStore.siteSettings.footer.meta2"
+              placeholder="如：Built for catalog display, wholesale leads, and content growth."
+            />
+          </el-form-item>
+        </el-form>
+      </section>
     </div>
   </div>
 </template>

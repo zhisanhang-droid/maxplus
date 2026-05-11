@@ -419,7 +419,7 @@
 
 .video-library__filters {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 1rem;
   margin-bottom: 1rem;
   padding: 0.75rem 1rem;

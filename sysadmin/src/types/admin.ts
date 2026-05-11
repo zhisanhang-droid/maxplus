@@ -65,12 +65,19 @@ export interface MailerSettingsState {
   textTemplate: string;
 }
 
+export interface FooterSettings {
+  text: string;
+  meta1: string;
+  meta2: string;
+}
+
 export interface SiteSettingsState {
   brand: BrandSettings;
   socials: SocialLink[];
   notifications: NotificationSettings;
   theme: SiteThemeState;
   mailer: MailerSettingsState;
+  footer: FooterSettings;
 }
 
 export interface HeroSlideItem {

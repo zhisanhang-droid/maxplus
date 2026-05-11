@@ -238,7 +238,11 @@ async function saveSiteSettings(payload) {
         current.notifications.enableSlackNotice
       )
     },
-    footer: current.footer,
+    footer: {
+      text: sanitizeText((payload.footer || {}).text, { max: 400, defaultValue: current.footer?.text || "" }),
+      meta1: sanitizeString((payload.footer || {}).meta1, { max: 200, defaultValue: current.footer?.meta1 || "" }),
+      meta2: sanitizeString((payload.footer || {}).meta2, { max: 200, defaultValue: current.footer?.meta2 || "" })
+    },
     theme: normalizeSiteTheme(themeInput, current.theme),
     mailer: normalizeMailerSettingsInput(mailerInput, currentStoredMailer)
   };

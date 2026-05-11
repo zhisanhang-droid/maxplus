@@ -1,4 +1,5 @@
 import type {
+  FooterSettings,
   MailerSettingsState,
   SiteSettingsState,
   SiteThemeState
@@ -67,6 +68,20 @@ export function normalizeMailerSettings(
   };
 }
 
+export function createDefaultFooterSettings(): FooterSettings {
+  return { text: "", meta1: "", meta2: "" };
+}
+
+export function normalizeFooterSettings(value?: Partial<FooterSettings> | null): FooterSettings {
+  const fallback = createDefaultFooterSettings();
+  const source = value ?? {};
+  return {
+    text: source.text?.trim() ?? fallback.text,
+    meta1: source.meta1?.trim() ?? fallback.meta1,
+    meta2: source.meta2?.trim() ?? fallback.meta2
+  };
+}
+
 export function createDefaultSiteSettings(): SiteSettingsState {
   return {
     brand: {
@@ -92,7 +107,8 @@ export function createDefaultSiteSettings(): SiteSettingsState {
       enableSlackNotice: false
     },
     theme: createDefaultSiteTheme(),
-    mailer: createDefaultMailerSettings()
+    mailer: createDefaultMailerSettings(),
+    footer: createDefaultFooterSettings()
   };
 }
 
@@ -118,6 +134,7 @@ export function normalizeSiteSettings(
       ...(source.notifications ?? {})
     },
     theme: normalizeSiteTheme(source.theme),
-    mailer: normalizeMailerSettings(source.mailer)
+    mailer: normalizeMailerSettings(source.mailer),
+    footer: normalizeFooterSettings(source.footer)
   };
 }

@@ -139,8 +139,8 @@
 .footer-meta {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: flex-start;
+  gap: 2rem;
   margin-top: 1.7rem;
   padding-top: 1rem;
   border-top: 1px solid rgba(255, 255, 255, 0.12);

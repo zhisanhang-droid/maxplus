@@ -295,6 +295,7 @@ export function buildSiteContent(
   content.footer.text = payload.siteSettings.footer?.text || content.footer.text;
   content.footer.meta1 = payload.siteSettings.footer?.meta1 || content.footer.meta1;
   content.footer.meta2 = payload.siteSettings.footer?.meta2 || content.footer.meta2;
+  content.footer.maxWidth = Number(payload.siteSettings.footer?.maxWidth) || content.footer.maxWidth;
   content.footer.contactLinks = [
     {
       href: `mailto:${payload.siteSettings.brand.salesEmail}`,

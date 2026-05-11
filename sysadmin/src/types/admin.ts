@@ -69,6 +69,7 @@ export interface FooterSettings {
   text: string;
   meta1: string;
   meta2: string;
+  maxWidth: number;
 }
 
 export interface SiteSettingsState {

@@ -254,6 +254,7 @@ export interface FooterContent {
   policyLinks: FooterLink[];
   meta1: string;
   meta2: string;
+  maxWidth: number;
 }
 
 export type SubscribeGiftStylePreset = "classic-gift" | "sport-burst" | "midnight-gift";

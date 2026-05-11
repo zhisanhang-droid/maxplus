@@ -241,7 +241,8 @@ async function saveSiteSettings(payload) {
     footer: {
       text: sanitizeText((payload.footer || {}).text, { max: 400, defaultValue: current.footer?.text || "" }),
       meta1: sanitizeString((payload.footer || {}).meta1, { max: 200, defaultValue: current.footer?.meta1 || "" }),
-      meta2: sanitizeString((payload.footer || {}).meta2, { max: 200, defaultValue: current.footer?.meta2 || "" })
+      meta2: sanitizeString((payload.footer || {}).meta2, { max: 200, defaultValue: current.footer?.meta2 || "" }),
+      maxWidth: Math.min(1220, Math.max(400, parseInt((payload.footer || {}).maxWidth, 10) || current.footer?.maxWidth || 813))
     },
     theme: normalizeSiteTheme(themeInput, current.theme),
     mailer: normalizeMailerSettingsInput(mailerInput, currentStoredMailer)

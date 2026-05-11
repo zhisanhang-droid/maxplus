@@ -219,6 +219,16 @@ const save = async () => {
               placeholder="如：Built for catalog display, wholesale leads, and content growth."
             />
           </el-form-item>
+          <el-form-item :label="`页脚最大宽度：${settingsStore.siteSettings.footer.maxWidth}px`">
+            <el-slider
+              v-model="settingsStore.siteSettings.footer.maxWidth"
+              :min="400"
+              :max="1220"
+              :step="10"
+              show-input
+            />
+            <div class="editor-hint">全站内容宽度上限为 1220px，建议页脚设置在 600–1000px 之间。</div>
+          </el-form-item>
         </el-form>
       </section>
     </div>

@@ -69,16 +69,18 @@ export function normalizeMailerSettings(
 }
 
 export function createDefaultFooterSettings(): FooterSettings {
-  return { text: "", meta1: "", meta2: "" };
+  return { text: "", meta1: "", meta2: "", maxWidth: 813 };
 }
 
 export function normalizeFooterSettings(value?: Partial<FooterSettings> | null): FooterSettings {
   const fallback = createDefaultFooterSettings();
   const source = value ?? {};
+  const rawWidth = Number(source.maxWidth);
   return {
     text: source.text?.trim() ?? fallback.text,
     meta1: source.meta1?.trim() ?? fallback.meta1,
-    meta2: source.meta2?.trim() ?? fallback.meta2
+    meta2: source.meta2?.trim() ?? fallback.meta2,
+    maxWidth: rawWidth >= 400 && rawWidth <= 1220 ? rawWidth : fallback.maxWidth
   };
 }
 

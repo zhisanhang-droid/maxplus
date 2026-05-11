@@ -95,7 +95,7 @@
 }
 
 .site-footer .shell {
-  max-width: 813px;
+  max-width: var(--footer-shell-max, 813px);
 }
 
 .footer-layout {

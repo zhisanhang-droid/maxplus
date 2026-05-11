@@ -11,7 +11,7 @@ const isInternalLink = (href: string) => href.startsWith("/");
 </script>
 
 <template>
-  <footer class="site-footer">
+  <footer class="site-footer" :style="footer.maxWidth ? `--footer-shell-max: ${footer.maxWidth}px` : ''">
     <div class="shell footer-layout">
       <div class="footer-brand">
         <BrandLogo

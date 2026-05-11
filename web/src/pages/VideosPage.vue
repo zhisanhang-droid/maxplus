@@ -19,10 +19,6 @@ const filteredVideos = computed(() =>
     : tutorialVideos.value.filter((v) => v.categorySlug === activeCategory.value)
 );
 
-const activeCategoryLabel = computed(() => {
-  if (activeCategory.value === "all") return "All Categories";
-  return categoryOptions.value.find((c) => c.slug === activeCategory.value)?.title ?? "All Categories";
-});
 
 const getCategoryLabel = (slug: string) => {
   const cat = videoCategories.value.find((c) => c.slug === slug);
@@ -72,7 +68,6 @@ usePageMeta({
 
         <div class="video-library__meta">
           <strong>{{ filteredVideos.length }}</strong>
-          <span>{{ activeCategoryLabel }}</span>
         </div>
       </div>
 

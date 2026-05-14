@@ -115,13 +115,23 @@ const getInitials = (name: string) =>
               </span>
             </div>
 
-            <blockquote class="review-card__quote">
+            <blockquote class=”review-card__quote”>
               “{{ item.quote }}”
             </blockquote>
 
+            <div v-if=”item.photos && item.photos.length” class=”review-card__photos”>
+              <img
+                v-for=”(photo, i) in item.photos”
+                :key=”i”
+                :src=”photo”
+                :alt=”`Review photo ${i + 1}`”
+                class=”review-card__photo”
+              />
+            </div>
+
             <div
-              v-if="reviews.displayMode === 'text' && (item.author || item.meta)"
-              class="review-card__footer"
+              v-if=”reviews.displayMode === 'text' && (item.author || item.meta)”
+              class=”review-card__footer”
             >
               <strong v-if="item.author">{{ item.author }}</strong>
               <span v-if="item.meta">{{ item.meta }}</span>

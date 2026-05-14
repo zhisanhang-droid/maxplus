@@ -217,6 +217,7 @@ export interface HomeReviewItem {
   author: string;
   meta: string;
   imageUrl: string;
+  photos: string[];
 }
 
 export interface HomeReviewsState {

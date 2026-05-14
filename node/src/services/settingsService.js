@@ -791,7 +791,8 @@ function normalizeReviewItems(value, fallback = []) {
       rating: normalizeInteger(item?.rating, { min: 1, max: 5, defaultValue: 5 }),
       author: sanitizeString(item?.author, { max: 80 }),
       meta: sanitizeString(item?.meta, { max: 120 }),
-      imageUrl: sanitizeString(item?.imageUrl, { max: 255 })
+      imageUrl: sanitizeString(item?.imageUrl, { max: 255 }),
+      photos: normalizeStringArray(item?.photos ?? [], { maxItems: 5, maxItemLength: 255 })
     }))
     .filter((item) => item.quote);
 }

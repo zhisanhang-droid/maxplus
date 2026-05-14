@@ -24,8 +24,23 @@ function createReviewDraft(): HomeReviewItem {
     rating: 5,
     author: "",
     meta: "",
-    imageUrl: ""
+    imageUrl: "",
+    photos: []
   };
+}
+
+function addPhotoSlot() {
+  draft.value.photos = [...draft.value.photos, ""];
+}
+
+function updatePhoto(index: number, url: string) {
+  const updated = [...draft.value.photos];
+  updated[index] = url;
+  draft.value.photos = updated;
+}
+
+function removePhoto(index: number) {
+  draft.value.photos = draft.value.photos.filter((_, i) => i !== index);
 }
 
 const visibleItems = computed(() => {
@@ -66,7 +81,8 @@ const saveDraft = async () => {
     meta: draft.value.meta.trim(),
     quote: draft.value.quote.trim(),
     imageUrl: draft.value.imageUrl.trim(),
-    rating: Number(draft.value.rating) || 5
+    rating: Number(draft.value.rating) || 5,
+    photos: draft.value.photos.filter(Boolean)
   };
 
   if (!payload.author || !payload.quote) {
@@ -191,6 +207,40 @@ const removeItem = async (item: HomeReviewItem) => {
           <ImageUploader v-model="draft.imageUrl" :token="token" />
           <el-input v-model="draft.imageUrl" placeholder="或粘贴图片地址（纯文字模式可留空）" />
         </div>
+
+        <div>
+          <p class="field-label">评论晒图（最多 5 张）</p>
+          <div class="photo-grid">
+            <div
+              v-for="(url, index) in draft.photos"
+              :key="index"
+              class="photo-grid__item"
+            >
+              <ImageUploader
+                :model-value="url"
+                :token="token"
+                @update:model-value="updatePhoto(index, $event)"
+              />
+              <el-button
+                size="small"
+                type="danger"
+                plain
+                class="photo-grid__del"
+                @click="removePhoto(index)"
+              >
+                移除
+              </el-button>
+            </div>
+            <el-button
+              v-if="draft.photos.length < 5"
+              class="photo-grid__add"
+              @click="addPhotoSlot"
+            >
+              + 添加晒图
+            </el-button>
+          </div>
+        </div>
+
         <el-input v-model="draft.quote" type="textarea" :rows="5" placeholder="评论内容" />
       </div>
 
@@ -226,5 +276,36 @@ const removeItem = async (item: HomeReviewItem) => {
 .image-field-row .el-input {
   flex: 1;
   align-self: center;
+}
+
+.field-label {
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #606266;
+}
+
+.photo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.photo-grid__item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.photo-grid__del {
+  width: 100%;
+}
+
+.photo-grid__add {
+  width: 160px;
+  height: 120px;
+  border: 1px dashed #dcdfe6;
+  border-radius: 6px;
+  color: #909399;
 }
 </style>

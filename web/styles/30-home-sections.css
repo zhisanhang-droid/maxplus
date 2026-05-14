@@ -680,3 +680,18 @@
   border-top: 1px solid var(--line);
 }
 
+.review-card__photos {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 0.75rem;
+}
+
+.review-card__photo {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+}
+

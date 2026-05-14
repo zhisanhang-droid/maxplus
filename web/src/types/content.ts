@@ -166,6 +166,7 @@ export interface ReviewCardItem {
   author: string;
   meta: string;
   imageUrl: string;
+  photos: string[];
 }
 
 export interface ReviewsContent {

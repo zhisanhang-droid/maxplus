@@ -9,6 +9,7 @@ const props = defineProps<{
 }>();
 
 const isInternalLink = (href: string) => href.startsWith("/");
+const isMailtoLink = (href: string) => href.startsWith("mailto:");
 
 const shellStyle = computed(() =>
   props.footer.maxWidth ? { maxWidth: `${props.footer.maxWidth}px` } : {}
@@ -32,7 +33,8 @@ const shellStyle = computed(() =>
         <div>
           <strong>{{ footer.contactTitle }}</strong>
           <template v-for="link in footer.contactLinks" :key="link.label">
-            <a v-if="!isInternalLink(link.href)" :href="link.href" target="_blank" rel="noopener">{{ link.label }}</a>
+            <span v-if="isMailtoLink(link.href)">{{ link.label }}</span>
+            <a v-else-if="!isInternalLink(link.href)" :href="link.href" target="_blank" rel="noopener">{{ link.label }}</a>
             <RouterLink v-else :to="link.href">{{ link.label }}</RouterLink>
           </template>
         </div>

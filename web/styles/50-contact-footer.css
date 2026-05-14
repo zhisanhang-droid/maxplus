@@ -120,9 +120,10 @@
 }
 
 .footer-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 0.5rem 3rem;
+  align-items: start;
   margin-right: 4rem;
 }
 

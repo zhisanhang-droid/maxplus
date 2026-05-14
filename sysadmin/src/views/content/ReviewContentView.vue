@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
 import { ElMessage, ElMessageBox } from "element-plus";
+import ImageUploader from "../../components/shared/ImageUploader.vue";
 import TablePagination from "../../components/shared/TablePagination.vue";
 import { useTablePagination } from "../../composables/useTablePagination";
+import { useSessionStore } from "../../stores/session";
 import { useSettingsStore } from "../../stores/settings";
 import type { HomeReviewItem } from "../../types/admin";
 
 const settingsStore = useSettingsStore();
+const sessionStore = useSessionStore();
+const token = computed(() => sessionStore.token);
 
 const search = ref("");
 const dialogVisible = ref(false);
@@ -183,7 +187,10 @@ const removeItem = async (item: HomeReviewItem) => {
           <el-input-number v-model="draft.rating" :min="1" :max="5" :controls="false" />
         </div>
 
-        <el-input v-model="draft.imageUrl" placeholder="评论图片地址，纯文字模式可留空" />
+        <div class="image-field-row">
+          <ImageUploader v-model="draft.imageUrl" :token="token" />
+          <el-input v-model="draft.imageUrl" placeholder="或粘贴图片地址（纯文字模式可留空）" />
+        </div>
         <el-input v-model="draft.quote" type="textarea" :rows="5" placeholder="评论内容" />
       </div>
 
@@ -208,5 +215,16 @@ const removeItem = async (item: HomeReviewItem) => {
   height: 48px;
   border-radius: 12px;
   border: 1px solid rgba(16, 33, 58, 0.08);
+}
+
+.image-field-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.image-field-row .el-input {
+  flex: 1;
+  align-self: center;
 }
 </style>
